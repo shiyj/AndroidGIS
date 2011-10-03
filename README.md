@@ -5,7 +5,7 @@
 
 This is a native GIS plantform made for Android.
 
-This app is a copy of spatialite-android(http://code.google.com/p/spatialite-android/) 
+This app is a copy of [spatialite-android](http://code.google.com/p/spatialite-android/) 
 but I want do something spatial for me.
 
 You must use Android-NDK to build it and , of cours, SDK & eclipse.
