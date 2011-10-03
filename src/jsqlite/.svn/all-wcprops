@@ -1,0 +1,191 @@
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/!svn/ver/2/trunk/src/jsqlite
+END
+Profile.java
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/2/trunk/src/jsqlite/Profile.java
+END
+Blob.class
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/2/trunk/src/jsqlite/Blob.class
+END
+BusyHandler.class
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/2/trunk/src/jsqlite/BusyHandler.class
+END
+BenchmarkThread.class
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/2/trunk/src/jsqlite/BenchmarkThread.class
+END
+Shell.java
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/2/trunk/src/jsqlite/Shell.java
+END
+Constants.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/2/trunk/src/jsqlite/Constants.java
+END
+Benchmark.class
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/2/trunk/src/jsqlite/Benchmark.class
+END
+Blob.java
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/2/trunk/src/jsqlite/Blob.java
+END
+Authorizer.class
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/2/trunk/src/jsqlite/Authorizer.class
+END
+BusyHandler.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/2/trunk/src/jsqlite/BusyHandler.java
+END
+Exception.class
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/2/trunk/src/jsqlite/Exception.class
+END
+SQLDump.java
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/2/trunk/src/jsqlite/SQLDump.java
+END
+TableResult.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/2/trunk/src/jsqlite/TableResult.java
+END
+FunctionContext.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/2/trunk/src/jsqlite/FunctionContext.java
+END
+Benchmark.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/2/trunk/src/jsqlite/Benchmark.java
+END
+Authorizer.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/2/trunk/src/jsqlite/Authorizer.java
+END
+Exception.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/2/trunk/src/jsqlite/Exception.java
+END
+ProgressHandler.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/2/trunk/src/jsqlite/ProgressHandler.java
+END
+SQLRestore.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/2/trunk/src/jsqlite/SQLRestore.java
+END
+Database.java
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/2/trunk/src/jsqlite/Database.java
+END
+Backup.java
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/2/trunk/src/jsqlite/Backup.java
+END
+StringEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/2/trunk/src/jsqlite/StringEncoder.java
+END
+Callback.class
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/2/trunk/src/jsqlite/Callback.class
+END
+Vm.java
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/2/trunk/src/jsqlite/Vm.java
+END
+BlobR.class
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/2/trunk/src/jsqlite/BlobR.class
+END
+Function.java
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/2/trunk/src/jsqlite/Function.java
+END
+Stmt.java
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/2/trunk/src/jsqlite/Stmt.java
+END
+BlobW.class
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/2/trunk/src/jsqlite/BlobW.class
+END
+Backup.class
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/2/trunk/src/jsqlite/Backup.class
+END
+Callback.java
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/2/trunk/src/jsqlite/Callback.java
+END
+Trace.java
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/2/trunk/src/jsqlite/Trace.java
+END

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="@string/hello"
+    />
+<Button 
+	android:text="Show in text" 
+	android:id="@+id/button1" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content" 
+	android:onClick="onClick"
+	></Button>
+<Button 
+	android:text="Show in Canvens" 
+	android:id="@+id/button2" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content" 
+	android:onClick="onShowUI"
+	></Button>
+<Button 
+	android:text="Show Canvens Test" 
+	android:id="@+id/button3" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content" 
+	android:onClick="onShowTestCanvas"
+	></Button>
+<Button 
+	android:text="Show Multitouch" 
+	android:id="@+id/button4" 
+	android:layout_width="match_parent" 
+	android:layout_height="wrap_content" 
+	android:onClick="onShowMultitouch"
+	></Button>
+<ListView android:id="@+id/listView1" android:layout_width="match_parent" android:layout_height="match_parent"></ListView>
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+10
+
+dir
+4
+http://spatialite-android.googlecode.com/svn/trunk/res
+http://spatialite-android.googlecode.com/svn
+
+
+
+2011-05-25T13:11:49.131514Z
+2
+efrohnho
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4f45a243-7bfc-1221-abe5-f9858998eb47
+
+values
+dir
+
+drawable-hdpi
+dir
+
+drawable-ldpi
+dir
+
+drawable-mdpi
+dir
+
+layout
+dir
+
