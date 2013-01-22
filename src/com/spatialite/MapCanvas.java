@@ -15,16 +15,22 @@ import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 
+import android.R.bool;
+import android.R.color;
 import android.R.integer;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -40,6 +46,7 @@ public class MapCanvas extends Activity {
 	private GeometryCollection mGeometryCollection;
 	private Envelope mGeomEnvelope;
 	private MyView mView;
+	private ProgressDialog mProgressDialog;
 	public MapCanvas()throws Exception {
 		mDatabase = new jsqlite.Database();
 		mDatabase.open("/mnt/sdcard/test-2.3.sqlite", jsqlite.Constants.SQLITE_OPEN_READONLY);
@@ -47,10 +54,13 @@ public class MapCanvas extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Toast.makeText(getApplicationContext(), "正在加载数据库……",
-				Toast.LENGTH_SHORT).show();
 		mView = new MyView(this);
 		setContentView(mView);
+		mProgressDialog = new ProgressDialog(this);
+		mProgressDialog.setTitle("Getting data");
+		mProgressDialog.setMessage("***I'm Loading***");
+		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		mProgressDialog.show();
 	}
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -64,6 +74,10 @@ public class MapCanvas extends Activity {
          return super.onKeyDown(keyCode, event);
     }
 
+	/**
+	 * @author engin
+	 *
+	 */
 	public class MyView extends View {
 		/**
 		 * 分别表示：SELECT选择属性 DRAG 拖动 ZOOM 放大缩小
@@ -94,7 +108,7 @@ public class MapCanvas extends Activity {
 			super(context);
 			getData();
 		}
-
+		Path path = new Path();
 		@Override
 		protected void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
@@ -103,6 +117,7 @@ public class MapCanvas extends Activity {
 			
 			paint.setColor(Color.BLUE);
 			paint.setStyle(Style.FILL);
+			canvas.drawText("Hello", 10, 50, paint);
 			//canvas.drawRect(new Rect(0, 0, view_w, view_h), paint);
 			if(null==mGeometryCollection)
 			{
@@ -299,47 +314,107 @@ public class MapCanvas extends Activity {
 			if(type.equals("MultiPoint"))
 			{
 				MultiPoint mulPoint=(MultiPoint)geomCollection;
-				DrawPoint(canvas,mulPoint);
+				DrawPoints(canvas,mulPoint);
+			} else if (type.equals("MultiLineString")) {
+				MultiLineString mulLine=(MultiLineString)geomCollection;
+				DrawLineStrings(canvas, mulLine);
+			} else if (type.equals("MultiPolygon")) {
+				MultiPolygon mulPolygon = (MultiPolygon)geomCollection;
+				DrawPolygons(canvas, mulPolygon);
 			}
 		}
-		private void DrawPoint(Canvas canvas,MultiPoint mulPoint)
+		private void DrawPoints(Canvas canvas,MultiPoint mulPoint)
 		{
-			paint.setColor(Color.GREEN);
-			canvas.drawText("Hello", 10, 50, paint);
-
 			paint.setColor(Color.RED);
 			paint.setStyle(Style.FILL);
-			
+			Log.v("点绘制", "开始绘图");
 			int len = mulPoint.getNumGeometries();
 			for (int i = 0; i < len; i++) {
 				Point pt = (Point)mulPoint.getGeometryN(i);
 				canvas.drawCircle((float)transData(pt.getX(), 0), (float)transData(pt.getY(), 1), 10, paint);
 			}
+			Log.v("点绘制", "结束绘图");
 		}
-		private void getData() {
-			try {
-				// Create query
-				//String query = "SELECT name, AsBinary(ST_Transform(geometry,4326)) from Towns where peoples > 350000";
-				String query = "SELECT name, AsBinary(ST_Transform(geometry,4326)) from Towns";
-				Stmt stmt = mDatabase.prepare(query);
-				ArrayList<Geometry> geoms = new ArrayList<Geometry>();
-				//geoms = new Geometry[colum_count];
-				GeometryFactory geomFactory = new GeometryFactory();
-				while(stmt.step()) {
-					// Create JTS geometry from binary representation
-					// returned from database
-					try {
-						geoms.add(new WKBReader().read(stmt.column_bytes(1)));
-						Geometry ge= new WKBReader().read(stmt.column_bytes(1));
-						String type =ge.getGeometryType();
-						type.equals("Point");
-					} catch (ParseException e) {
-						Log.e(TAG, e.getMessage());
-					}
+		
+		/**
+		 * @param canvas
+		 * @param mulLines
+		 * no multilines in multilines are support right now.   shiyj 2013.01.22
+		 */
+		private void  DrawLineStrings(Canvas canvas,MultiLineString mulLines) {
+			paint.setColor(Color.GREEN);
+			Log.v("线绘制", "开始绘图");
+			int len = mulLines.getNumGeometries();
+			for (int i = 0; i < len; i++) {
+				LineString line = (LineString) mulLines.getGeometryN(i);
+				int pointLen = line.getNumPoints();
+				for (int j = 0; j < pointLen-1; j++) {
+					Point ptStart = line.getPointN(j);
+					Point ptStop = line.getPointN(j+1);
+					canvas.drawLine((float)transData(ptStart.getX(), 0), 
+							(float)transData(ptStart.getY(), 1), 
+							(float)transData(ptStop.getX(), 0), 
+							(float)transData(ptStop.getY(), 1), paint);
 				}
-				Point[] arrGeom = (Point[])geoms.toArray(new Point[geoms.size()]);//new Geometry[geoms.size()];			
-				mGeometryCollection = geomFactory.createMultiPoint(arrGeom);
+			}
+			Log.v("线绘制", "结束绘图");
+		}
+		
+		/**
+		 * @param canvas
+		 * @param mulPolygon
+		 * no islands is support (by jts geometry) right now.      shiyj 2013.01.22
+		 */
+		private void  DrawPolygons(Canvas canvas,MultiPolygon mulPolygon) {
+			paint.setColor(Color.GREEN);
+			Log.v("面绘制", "开始绘图");
+			int len = mulPolygon.getNumGeometries();
+			for (int i = 0; i < len; i++) {
+				Polygon pg = (Polygon) mulPolygon.getGeometryN(i);
+				int innerRines = pg.getNumInteriorRing();
+				for (int j = 0; j < innerRines; j++) {
+					DrawPolygon(canvas, pg.getInteriorRingN(j), true);
+				}
+				LineString outterRine = pg.getExteriorRing();
+				DrawPolygon(canvas, outterRine, false);
+			}
+			Log.v("面绘制", "结束绘图");
+		}
+		private void DrawPolygon(Canvas canvas,LineString polygon,Boolean isInerRing) {
+			if (isInerRing) {
+				paint.setColor(Color.BLACK);
+			} else {
+				paint.setColor(Color.BLUE);
+			}
+			paint.setStyle(Style.FILL);
+			path.reset();
+			int len = polygon.getNumPoints();
+			//no data
+			if (len<1) {
+				return;
+			}
+			Point pt0 = polygon.getPointN(0);
+			path.moveTo((float)transData(pt0.getX(), 0), 
+							(float)transData(pt0.getY(), 1));
+			for (int i = 1; i < len; i++) {
+				Point pt = polygon.getPointN(i);
+				path.lineTo((float)transData(pt.getX(), 0), 
+							(float)transData(pt.getY(), 1));
+			}
+			path.close();
+			canvas.drawPath(path, paint);
+		}
+		Handler handlerGetData = new Handler(){
+			@Override
+			public void handleMessage(Message msg){
+				mGeometryCollection = (GeometryCollection)msg.obj;
+				if (null == mGeometryCollection) {
+					Log.v("绘图", "未取得数据……");
+					mProgressDialog.dismiss();
+					return;
+				}
 				mGeomEnvelope = mGeometryCollection.getEnvelopeInternal();
+				Log.v("绘图", "转化结束……");
 				double geom_width,geom_height;
 				geom_width = mGeomEnvelope.getWidth();
 				geom_height = mGeomEnvelope.getHeight();
@@ -368,10 +443,15 @@ public class MapCanvas extends Activity {
 					}
 				}
 				leavel = rate;
-				stmt.close();
-			} catch (Exception e) {
-				Log.e(TAG, e.getMessage());
+				mProgressDialog.dismiss();
+				postInvalidate();
 			}
+		};
+		private void getData() {
+			
+			QueryDataThread qdThread = new QueryDataThread(mDatabase, handlerGetData.obtainMessage());
+			qdThread.start();
+			qdThread = null;
 		}
 	}
 }
