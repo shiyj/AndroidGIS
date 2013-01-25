@@ -1,0 +1,264 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+DRAG	MapCanvas.java	/^    private static final int DRAG = 2;$/;"	f	class:MapCanvas.MyView	file:	access:private
+DRAG	MultiTouch.java	/^  private static final int DRAG = 1;$/;"	f	class:MultiTouch	file:	access:private
+DrawGeomtry	MapCanvas.java	/^    private void DrawGeomtry(Canvas canvas){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas)
+DrawLineStrings	MapCanvas.java	/^    private void  DrawLineStrings(Canvas canvas,Geometry geometry) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,Geometry geometry)
+DrawPoints	MapCanvas.java	/^    private void DrawPoints(Canvas canvas,Geometry geometry){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,Geometry geometry)
+DrawPolygon	MapCanvas.java	/^    private void DrawPolygon(Canvas canvas,LineString polygon,Boolean isInerRing) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,LineString polygon,Boolean isInerRing)
+DrawPolygons	MapCanvas.java	/^    private void  DrawPolygons(Canvas canvas,Geometry geometry) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,Geometry geometry)
+MAX_TOUCHPOINTS	MTView.java	/^    private static final int MAX_TOUCHPOINTS = 10;  $/;"	f	class:MTView	file:	access:private
+MTView	MTView.java	/^    public MTView(Context context) {  $/;"	m	class:MTView	access:public	signature:(Context context)
+MTView	MTView.java	/^public class MTView extends SurfaceView implements SurfaceHolder.Callback {  $/;"	c	inherits:SurfaceView,SurfaceHolder.Callback
+MTView.MAX_TOUCHPOINTS	MTView.java	/^    private static final int MAX_TOUCHPOINTS = 10;  $/;"	f	class:MTView	file:	access:private
+MTView.MTView	MTView.java	/^    public MTView(Context context) {  $/;"	m	class:MTView	access:public	signature:(Context context)
+MTView.START_TEXT	MTView.java	/^    private static final String START_TEXT = "请随便触摸屏幕进行测试";  $/;"	f	class:MTView	file:	access:private
+MTView.colors	MTView.java	/^    private int colors[] = new int[MAX_TOUCHPOINTS];  $/;"	f	class:MTView	file:	access:private
+MTView.drawCircle	MTView.java	/^    private void drawCircle(int x, int y, Paint paint, Canvas c) {  $/;"	m	class:MTView	file:	access:private	signature:(int x, int y, Paint paint, Canvas c)
+MTView.drawCrosshairsAndText	MTView.java	/^    private void drawCrosshairsAndText(int x, int y, Paint paint, int ptr,  $/;"	m	class:MTView	file:	access:private	signature:(int x, int y, Paint paint, int ptr, int id, Canvas c)
+MTView.height	MTView.java	/^    private int width, height;  $/;"	f	class:MTView	file:	access:private
+MTView.init	MTView.java	/^    private void init() {  $/;"	m	class:MTView	file:	access:private	signature:()
+MTView.onTouchEvent	MTView.java	/^    public boolean onTouchEvent(MotionEvent event) {  $/;"	m	class:MTView	access:public	signature:(MotionEvent event)
+MTView.scale	MTView.java	/^    private float scale = 1.0f;  $/;"	f	class:MTView	file:	access:private
+MTView.surfaceChanged	MTView.java	/^    public void surfaceChanged(SurfaceHolder holder, int format, int width,  $/;"	m	class:MTView	access:public	signature:(SurfaceHolder holder, int format, int width, int height)
+MTView.surfaceCreated	MTView.java	/^    public void surfaceCreated(SurfaceHolder holder) {  $/;"	m	class:MTView	access:public	signature:(SurfaceHolder holder)
+MTView.surfaceDestroyed	MTView.java	/^    public void surfaceDestroyed(SurfaceHolder holder) {  $/;"	m	class:MTView	access:public	signature:(SurfaceHolder holder)
+MTView.textPaint	MTView.java	/^    private Paint textPaint = new Paint();  $/;"	f	class:MTView	file:	access:private
+MTView.touchPaints	MTView.java	/^    private Paint touchPaints[] = new Paint[MAX_TOUCHPOINTS];  $/;"	f	class:MTView	file:	access:private
+MTView.width	MTView.java	/^    private int width, height;  $/;"	f	class:MTView	file:	access:private
+MapCanvas	MapCanvas.java	/^  public MapCanvas()throws Exception {$/;"	m	class:MapCanvas	access:public	signature:()
+MapCanvas	MapCanvas.java	/^public class MapCanvas extends Activity {$/;"	c	inherits:Activity
+MapCanvas.MapCanvas	MapCanvas.java	/^  public MapCanvas()throws Exception {$/;"	m	class:MapCanvas	access:public	signature:()
+MapCanvas.MyView	MapCanvas.java	/^  public class MyView extends View {$/;"	c	class:MapCanvas	inherits:View	access:public
+MapCanvas.MyView.DRAG	MapCanvas.java	/^    private static final int DRAG = 2;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.DrawGeomtry	MapCanvas.java	/^    private void DrawGeomtry(Canvas canvas){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas)
+MapCanvas.MyView.DrawLineStrings	MapCanvas.java	/^    private void  DrawLineStrings(Canvas canvas,Geometry geometry) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,Geometry geometry)
+MapCanvas.MyView.DrawPoints	MapCanvas.java	/^    private void DrawPoints(Canvas canvas,Geometry geometry){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,Geometry geometry)
+MapCanvas.MyView.DrawPolygon	MapCanvas.java	/^    private void DrawPolygon(Canvas canvas,LineString polygon,Boolean isInerRing) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,LineString polygon,Boolean isInerRing)
+MapCanvas.MyView.DrawPolygons	MapCanvas.java	/^    private void  DrawPolygons(Canvas canvas,Geometry geometry) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(Canvas canvas,Geometry geometry)
+MapCanvas.MyView.MyView	MapCanvas.java	/^    MyView(Context context) {$/;"	m	class:MapCanvas.MyView	access:default	signature:(Context context)
+MapCanvas.MyView.NONE	MapCanvas.java	/^    private static final int NONE = 0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.SELECT	MapCanvas.java	/^    private static final int SELECT = 3;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.ZOOM	MapCanvas.java	/^    private static final int ZOOM = 1;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.antTransData	MapCanvas.java	/^    private double antTransData(double f, double i) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double f, double i)
+MapCanvas.MyView.drag	MapCanvas.java	/^    private void drag(){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:()
+MapCanvas.MyView.dx	MapCanvas.java	/^    private double dx=0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.dy	MapCanvas.java	/^    private double dy=0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.getData	MapCanvas.java	/^    private void getData() {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:()
+MapCanvas.MyView.handlerGetData	MapCanvas.java	/^    Handler handlerGetData = new Handler(){$/;"	f	class:MapCanvas.MyView	access:default
+MapCanvas.MyView.leavel	MapCanvas.java	/^    private double leavel = 1;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_endX	MapCanvas.java	/^    private double m_endX;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_endY	MapCanvas.java	/^    private double m_endY;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_fOldDist	MapCanvas.java	/^    private double m_fOldDist = 1f;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_geoms	MapCanvas.java	/^    private ArrayList<Geometry> m_geoms = new ArrayList<Geometry>();$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_nMode	MapCanvas.java	/^    private int m_nMode = DRAG;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_startX	MapCanvas.java	/^    private double m_startX=0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.m_startY	MapCanvas.java	/^    private double m_startY;$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.onDraw	MapCanvas.java	/^    protected void onDraw(Canvas canvas) {$/;"	m	class:MapCanvas.MyView	access:protected	signature:(Canvas canvas)
+MapCanvas.MyView.onTouchEvent	MapCanvas.java	/^    public boolean onTouchEvent(MotionEvent event) {$/;"	m	class:MapCanvas.MyView	access:public	signature:(MotionEvent event)
+MapCanvas.MyView.paint	MapCanvas.java	/^    private Paint paint = new Paint();$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.path	MapCanvas.java	/^    Path path = new Path();$/;"	f	class:MapCanvas.MyView	access:default
+MapCanvas.MyView.query	MapCanvas.java	/^    private void query(double x,double y){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double x,double y)
+MapCanvas.MyView.rate	MapCanvas.java	/^    private double rate;\/\/全屏时比例$/;"	f	class:MapCanvas.MyView	file:	access:private
+MapCanvas.MyView.spacing	MapCanvas.java	/^    private double spacing(MotionEvent event) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(MotionEvent event)
+MapCanvas.MyView.transData	MapCanvas.java	/^    private double transData(double f, double i) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double f, double i)
+MapCanvas.MyView.view_h	MapCanvas.java	/^    int view_h = 400;$/;"	f	class:MapCanvas.MyView	access:default
+MapCanvas.MyView.view_w	MapCanvas.java	/^    int view_w =300;$/;"	f	class:MapCanvas.MyView	access:default
+MapCanvas.MyView.zoom	MapCanvas.java	/^    private void zoom(double dis){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double dis)
+MapCanvas.MyView.zoomIn	MapCanvas.java	/^    public void zoomIn() {$/;"	m	class:MapCanvas.MyView	access:public	signature:()
+MapCanvas.MyView.zoomOut	MapCanvas.java	/^    public void zoomOut() {$/;"	m	class:MapCanvas.MyView	access:public	signature:()
+MapCanvas.TAG	MapCanvas.java	/^  private static final String TAG = TestActivity.class.getName();$/;"	f	class:MapCanvas	file:	access:private
+MapCanvas.mDatabase	MapCanvas.java	/^  private final jsqlite.Database mDatabase;$/;"	f	class:MapCanvas	file:	access:private
+MapCanvas.mGeomEnvelope	MapCanvas.java	/^  private Envelope mGeomEnvelope;$/;"	f	class:MapCanvas	file:	access:private
+MapCanvas.mProgressDialog	MapCanvas.java	/^  private ProgressDialog mProgressDialog;$/;"	f	class:MapCanvas	file:	access:private
+MapCanvas.mView	MapCanvas.java	/^  private MyView mView;$/;"	f	class:MapCanvas	file:	access:private
+MapCanvas.onCreate	MapCanvas.java	/^  protected void onCreate(Bundle savedInstanceState) {$/;"	m	class:MapCanvas	access:protected	signature:(Bundle savedInstanceState)
+MapCanvas.onKeyDown	MapCanvas.java	/^  public boolean onKeyDown(int keyCode, KeyEvent event) {$/;"	m	class:MapCanvas	access:public	signature:(int keyCode, KeyEvent event)
+MultiTouch	MultiTouch.java	/^  public MultiTouch(Context context)$/;"	m	class:MultiTouch	access:public	signature:(Context context)
+MultiTouch	MultiTouch.java	/^  public MultiTouch(Context context, AttributeSet attrs)$/;"	m	class:MultiTouch	access:public	signature:(Context context, AttributeSet attrs)
+MultiTouch	MultiTouch.java	/^public class MultiTouch extends View$/;"	c	inherits:View
+MultiTouch.DRAG	MultiTouch.java	/^  private static final int DRAG = 1;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.MultiTouch	MultiTouch.java	/^  public MultiTouch(Context context)$/;"	m	class:MultiTouch	access:public	signature:(Context context)
+MultiTouch.MultiTouch	MultiTouch.java	/^  public MultiTouch(Context context, AttributeSet attrs)$/;"	m	class:MultiTouch	access:public	signature:(Context context, AttributeSet attrs)
+MultiTouch.NONE	MultiTouch.java	/^  private static final int NONE = 0;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.ZOOM	MultiTouch.java	/^  private static final int ZOOM = 2;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_fMargins	MultiTouch.java	/^  private float m_fMargins = 120;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_fOldDist	MultiTouch.java	/^  float m_fOldDist = 1f;$/;"	f	class:MultiTouch	access:default
+MultiTouch.m_nErrorValue	MultiTouch.java	/^  private int m_nErrorValue = 30;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_nMaximum	MultiTouch.java	/^  private int m_nMaximum = 150;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_nMinimun	MultiTouch.java	/^  private int m_nMinimun = 30;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_nMode	MultiTouch.java	/^  private int m_nMode = NONE;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_nStep	MultiTouch.java	/^  private int m_nStep =1;$/;"	f	class:MultiTouch	file:	access:private
+MultiTouch.m_pMid	MultiTouch.java	/^  PointF m_pMid = new PointF();$/;"	f	class:MultiTouch	access:default
+MultiTouch.m_pStart	MultiTouch.java	/^  PointF m_pStart = new PointF();$/;"	f	class:MultiTouch	access:default
+MultiTouch.midPoint	MultiTouch.java	/^  private void midPoint(PointF point, MotionEvent event)$/;"	m	class:MultiTouch	file:	access:private	signature:(PointF point, MotionEvent event)
+MultiTouch.onDraw	MultiTouch.java	/^  protected void onDraw(Canvas canvas)$/;"	m	class:MultiTouch	access:protected	signature:(Canvas canvas)
+MultiTouch.onTouchEvent	MultiTouch.java	/^  public boolean onTouchEvent(MotionEvent event)$/;"	m	class:MultiTouch	access:public	signature:(MotionEvent event)
+MultiTouch.spacing	MultiTouch.java	/^  private float spacing(MotionEvent event)$/;"	m	class:MultiTouch	file:	access:private	signature:(MotionEvent event)
+MultitouchVisible	MultitouchVisible.java	/^public class MultitouchVisible extends Activity {  $/;"	c	inherits:Activity
+MultitouchVisible.onCreate	MultitouchVisible.java	/^    public void onCreate(Bundle savedInstanceState) {  $/;"	m	class:MultitouchVisible	access:public	signature:(Bundle savedInstanceState)
+MyView	MapCanvas.java	/^    MyView(Context context) {$/;"	m	class:MapCanvas.MyView	access:default	signature:(Context context)
+MyView	MapCanvas.java	/^  public class MyView extends View {$/;"	c	class:MapCanvas	inherits:View	access:public
+MyView	TestCanvas.java	/^	                public MyView(Context context) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(Context context)
+MyView	TestCanvas.java	/^	class MyView extends View {$/;"	c	class:TestCanvas	inherits:View	access:default
+NONE	MapCanvas.java	/^    private static final int NONE = 0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+NONE	MultiTouch.java	/^  private static final int NONE = 0;$/;"	f	class:MultiTouch	file:	access:private
+QueryDataThread	QueryDataThread.java	/^	public QueryDataThread(jsqlite.Database database,Message msg) {$/;"	m	class:QueryDataThread	access:public	signature:(jsqlite.Database database,Message msg)
+QueryDataThread	QueryDataThread.java	/^public class QueryDataThread  extends Thread{$/;"	c	inherits:Thread
+QueryDataThread.QueryDataThread	QueryDataThread.java	/^	public QueryDataThread(jsqlite.Database database,Message msg) {$/;"	m	class:QueryDataThread	access:public	signature:(jsqlite.Database database,Message msg)
+QueryDataThread.mDatabase	QueryDataThread.java	/^	private final jsqlite.Database mDatabase;$/;"	f	class:QueryDataThread	file:	access:private
+QueryDataThread.mMsg	QueryDataThread.java	/^	private Message mMsg;$/;"	f	class:QueryDataThread	file:	access:private
+QueryDataThread.run	QueryDataThread.java	/^	public void run()$/;"	m	class:QueryDataThread	access:public	signature:()
+SELECT	MapCanvas.java	/^    private static final int SELECT = 3;$/;"	f	class:MapCanvas.MyView	file:	access:private
+START_TEXT	MTView.java	/^    private static final String START_TEXT = "请随便触摸屏幕进行测试";  $/;"	f	class:MTView	file:	access:private
+TAG	MapCanvas.java	/^  private static final String TAG = TestActivity.class.getName();$/;"	f	class:MapCanvas	file:	access:private
+TAG	TestActivity.java	/^	private static final String TAG = TestActivity.class.getName();$/;"	f	class:TestActivity	file:	access:private
+TestActivity	TestActivity.java	/^public class TestActivity  extends Activity {$/;"	c	inherits:Activity
+TestActivity.TAG	TestActivity.java	/^	private static final String TAG = TestActivity.class.getName();$/;"	f	class:TestActivity	file:	access:private
+TestActivity.bindList	TestActivity.java	/^	private void bindList(){$/;"	m	class:TestActivity	file:	access:private	signature:()
+TestActivity.context	TestActivity.java	/^	private Context context;$/;"	f	class:TestActivity	file:	access:private
+TestActivity.getData	TestActivity.java	/^	private void getData(){$/;"	m	class:TestActivity	file:	access:private	signature:()
+TestActivity.listItem	TestActivity.java	/^	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();$/;"	f	class:TestActivity	file:	access:private
+TestActivity.onClick	TestActivity.java	/^	public void onClick(View v) {$/;"	m	class:TestActivity	access:public	signature:(View v)
+TestActivity.onCreate	TestActivity.java	/^	protected void onCreate(Bundle savedInstanceState) {$/;"	m	class:TestActivity	access:protected	signature:(Bundle savedInstanceState)
+TestActivity.onShowMultitouch	TestActivity.java	/^	public void onShowMultitouch(View v){$/;"	m	class:TestActivity	access:public	signature:(View v)
+TestActivity.onShowTestCanvas	TestActivity.java	/^	public void onShowTestCanvas(View v){$/;"	m	class:TestActivity	access:public	signature:(View v)
+TestActivity.onShowUI	TestActivity.java	/^	public void onShowUI(View v) {$/;"	m	class:TestActivity	access:public	signature:(View v)
+TestCanvas	TestCanvas.java	/^public class TestCanvas extends Activity {$/;"	c	inherits:Activity
+TestCanvas.MyView	TestCanvas.java	/^	class MyView extends View {$/;"	c	class:TestCanvas	inherits:View	access:default
+TestCanvas.MyView.MyView	TestCanvas.java	/^	                public MyView(Context context) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(Context context)
+TestCanvas.MyView.bmp1	TestCanvas.java	/^	                Bitmap mBitmap, bmp1, bmp2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.bmp2	TestCanvas.java	/^	                Bitmap mBitmap, bmp1, bmp2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.bmpClick	TestCanvas.java	/^	                public Bitmap bmpClick(float mx, float my) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(float mx, float my)
+TestCanvas.MyView.drawImage	TestCanvas.java	/^	                public void drawImage(Bitmap bmp, float x, float y) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(Bitmap bmp, float x, float y)
+TestCanvas.MyView.flag	TestCanvas.java	/^	                int flag = 0;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.init	TestCanvas.java	/^	                public void init() {$/;"	m	class:TestCanvas.MyView	access:public	signature:()
+TestCanvas.MyView.initx	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.initx2	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.inity	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.inity2	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.lastx	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.lasty	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.list	TestCanvas.java	/^	                List<HashMap> list = new ArrayList<HashMap>();$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.mBitmap	TestCanvas.java	/^	                Bitmap mBitmap, bmp1, bmp2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.mCanvas	TestCanvas.java	/^	                Canvas mCanvas;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.mPaint	TestCanvas.java	/^	                Paint mPaint;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.map	TestCanvas.java	/^	                HashMap map = null;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.movex	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.movey	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+TestCanvas.MyView.onDraw	TestCanvas.java	/^	                protected void onDraw(Canvas canvas) {$/;"	m	class:TestCanvas.MyView	access:protected	signature:(Canvas canvas)
+TestCanvas.MyView.onTouchEvent	TestCanvas.java	/^	                public boolean onTouchEvent(MotionEvent event) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(MotionEvent event)
+TestCanvas.mDragBitmap	TestCanvas.java	/^	        private Bitmap mDragBitmap = null;$/;"	f	class:TestCanvas	file:	access:private
+TestCanvas.onCreate	TestCanvas.java	/^	protected void onCreate(Bundle savedInstanceState) {$/;"	m	class:TestCanvas	access:protected	signature:(Bundle savedInstanceState)
+Touch	Touch.java	/^public class Touch extends Activity {  $/;"	c	inherits:Activity
+Touch.onCreate	Touch.java	/^    public void onCreate(Bundle savedInstanceState) {  $/;"	m	class:Touch	access:public	signature:(Bundle savedInstanceState)
+ZOOM	MapCanvas.java	/^    private static final int ZOOM = 1;$/;"	f	class:MapCanvas.MyView	file:	access:private
+ZOOM	MultiTouch.java	/^  private static final int ZOOM = 2;$/;"	f	class:MultiTouch	file:	access:private
+antTransData	MapCanvas.java	/^    private double antTransData(double f, double i) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double f, double i)
+bindList	TestActivity.java	/^	private void bindList(){$/;"	m	class:TestActivity	file:	access:private	signature:()
+bmp1	TestCanvas.java	/^	                Bitmap mBitmap, bmp1, bmp2;$/;"	f	class:TestCanvas.MyView	access:default
+bmp2	TestCanvas.java	/^	                Bitmap mBitmap, bmp1, bmp2;$/;"	f	class:TestCanvas.MyView	access:default
+bmpClick	TestCanvas.java	/^	                public Bitmap bmpClick(float mx, float my) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(float mx, float my)
+colors	MTView.java	/^    private int colors[] = new int[MAX_TOUCHPOINTS];  $/;"	f	class:MTView	file:	access:private
+com.spatialite	MTView.java	/^package com.spatialite;$/;"	p
+com.spatialite	MapCanvas.java	/^package com.spatialite;$/;"	p
+com.spatialite	MultiTouch.java	/^package com.spatialite;$/;"	p
+com.spatialite	MultitouchVisible.java	/^package com.spatialite;$/;"	p
+com.spatialite	QueryDataThread.java	/^package com.spatialite;$/;"	p
+com.spatialite	TestActivity.java	/^package com.spatialite;$/;"	p
+com.spatialite	TestCanvas.java	/^package com.spatialite;$/;"	p
+com.spatialite	Touch.java	/^package com.spatialite;$/;"	p
+context	TestActivity.java	/^	private Context context;$/;"	f	class:TestActivity	file:	access:private
+drag	MapCanvas.java	/^    private void drag(){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:()
+drawCircle	MTView.java	/^    private void drawCircle(int x, int y, Paint paint, Canvas c) {  $/;"	m	class:MTView	file:	access:private	signature:(int x, int y, Paint paint, Canvas c)
+drawCrosshairsAndText	MTView.java	/^    private void drawCrosshairsAndText(int x, int y, Paint paint, int ptr,  $/;"	m	class:MTView	file:	access:private	signature:(int x, int y, Paint paint, int ptr, int id, Canvas c)
+drawImage	TestCanvas.java	/^	                public void drawImage(Bitmap bmp, float x, float y) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(Bitmap bmp, float x, float y)
+dx	MapCanvas.java	/^    private double dx=0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+dy	MapCanvas.java	/^    private double dy=0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+flag	TestCanvas.java	/^	                int flag = 0;$/;"	f	class:TestCanvas.MyView	access:default
+getData	MapCanvas.java	/^    private void getData() {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:()
+getData	TestActivity.java	/^	private void getData(){$/;"	m	class:TestActivity	file:	access:private	signature:()
+handlerGetData	MapCanvas.java	/^    Handler handlerGetData = new Handler(){$/;"	f	class:MapCanvas.MyView	access:default
+height	MTView.java	/^    private int width, height;  $/;"	f	class:MTView	file:	access:private
+init	MTView.java	/^    private void init() {  $/;"	m	class:MTView	file:	access:private	signature:()
+init	TestCanvas.java	/^	                public void init() {$/;"	m	class:TestCanvas.MyView	access:public	signature:()
+initx	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+initx2	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+inity	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+inity2	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+lastx	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+lasty	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+leavel	MapCanvas.java	/^    private double leavel = 1;$/;"	f	class:MapCanvas.MyView	file:	access:private
+list	TestCanvas.java	/^	                List<HashMap> list = new ArrayList<HashMap>();$/;"	f	class:TestCanvas.MyView	access:default
+listItem	TestActivity.java	/^	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();$/;"	f	class:TestActivity	file:	access:private
+mBitmap	TestCanvas.java	/^	                Bitmap mBitmap, bmp1, bmp2;$/;"	f	class:TestCanvas.MyView	access:default
+mCanvas	TestCanvas.java	/^	                Canvas mCanvas;$/;"	f	class:TestCanvas.MyView	access:default
+mDatabase	MapCanvas.java	/^  private final jsqlite.Database mDatabase;$/;"	f	class:MapCanvas	file:	access:private
+mDatabase	QueryDataThread.java	/^	private final jsqlite.Database mDatabase;$/;"	f	class:QueryDataThread	file:	access:private
+mDragBitmap	TestCanvas.java	/^	        private Bitmap mDragBitmap = null;$/;"	f	class:TestCanvas	file:	access:private
+mGeomEnvelope	MapCanvas.java	/^  private Envelope mGeomEnvelope;$/;"	f	class:MapCanvas	file:	access:private
+mMsg	QueryDataThread.java	/^	private Message mMsg;$/;"	f	class:QueryDataThread	file:	access:private
+mPaint	TestCanvas.java	/^	                Paint mPaint;$/;"	f	class:TestCanvas.MyView	access:default
+mProgressDialog	MapCanvas.java	/^  private ProgressDialog mProgressDialog;$/;"	f	class:MapCanvas	file:	access:private
+mView	MapCanvas.java	/^  private MyView mView;$/;"	f	class:MapCanvas	file:	access:private
+m_endX	MapCanvas.java	/^    private double m_endX;$/;"	f	class:MapCanvas.MyView	file:	access:private
+m_endY	MapCanvas.java	/^    private double m_endY;$/;"	f	class:MapCanvas.MyView	file:	access:private
+m_fMargins	MultiTouch.java	/^  private float m_fMargins = 120;$/;"	f	class:MultiTouch	file:	access:private
+m_fOldDist	MapCanvas.java	/^    private double m_fOldDist = 1f;$/;"	f	class:MapCanvas.MyView	file:	access:private
+m_fOldDist	MultiTouch.java	/^  float m_fOldDist = 1f;$/;"	f	class:MultiTouch	access:default
+m_geoms	MapCanvas.java	/^    private ArrayList<Geometry> m_geoms = new ArrayList<Geometry>();$/;"	f	class:MapCanvas.MyView	file:	access:private
+m_nErrorValue	MultiTouch.java	/^  private int m_nErrorValue = 30;$/;"	f	class:MultiTouch	file:	access:private
+m_nMaximum	MultiTouch.java	/^  private int m_nMaximum = 150;$/;"	f	class:MultiTouch	file:	access:private
+m_nMinimun	MultiTouch.java	/^  private int m_nMinimun = 30;$/;"	f	class:MultiTouch	file:	access:private
+m_nMode	MapCanvas.java	/^    private int m_nMode = DRAG;$/;"	f	class:MapCanvas.MyView	file:	access:private
+m_nMode	MultiTouch.java	/^  private int m_nMode = NONE;$/;"	f	class:MultiTouch	file:	access:private
+m_nStep	MultiTouch.java	/^  private int m_nStep =1;$/;"	f	class:MultiTouch	file:	access:private
+m_pMid	MultiTouch.java	/^  PointF m_pMid = new PointF();$/;"	f	class:MultiTouch	access:default
+m_pStart	MultiTouch.java	/^  PointF m_pStart = new PointF();$/;"	f	class:MultiTouch	access:default
+m_startX	MapCanvas.java	/^    private double m_startX=0;$/;"	f	class:MapCanvas.MyView	file:	access:private
+m_startY	MapCanvas.java	/^    private double m_startY;$/;"	f	class:MapCanvas.MyView	file:	access:private
+map	TestCanvas.java	/^	                HashMap map = null;$/;"	f	class:TestCanvas.MyView	access:default
+midPoint	MultiTouch.java	/^  private void midPoint(PointF point, MotionEvent event)$/;"	m	class:MultiTouch	file:	access:private	signature:(PointF point, MotionEvent event)
+movex	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+movey	TestCanvas.java	/^	                float movex, movey, lastx, lasty, initx, inity, initx2, inity2;$/;"	f	class:TestCanvas.MyView	access:default
+onClick	TestActivity.java	/^	public void onClick(View v) {$/;"	m	class:TestActivity	access:public	signature:(View v)
+onCreate	MapCanvas.java	/^  protected void onCreate(Bundle savedInstanceState) {$/;"	m	class:MapCanvas	access:protected	signature:(Bundle savedInstanceState)
+onCreate	MultitouchVisible.java	/^    public void onCreate(Bundle savedInstanceState) {  $/;"	m	class:MultitouchVisible	access:public	signature:(Bundle savedInstanceState)
+onCreate	TestActivity.java	/^	protected void onCreate(Bundle savedInstanceState) {$/;"	m	class:TestActivity	access:protected	signature:(Bundle savedInstanceState)
+onCreate	TestCanvas.java	/^	protected void onCreate(Bundle savedInstanceState) {$/;"	m	class:TestCanvas	access:protected	signature:(Bundle savedInstanceState)
+onCreate	Touch.java	/^    public void onCreate(Bundle savedInstanceState) {  $/;"	m	class:Touch	access:public	signature:(Bundle savedInstanceState)
+onDraw	MapCanvas.java	/^    protected void onDraw(Canvas canvas) {$/;"	m	class:MapCanvas.MyView	access:protected	signature:(Canvas canvas)
+onDraw	MultiTouch.java	/^  protected void onDraw(Canvas canvas)$/;"	m	class:MultiTouch	access:protected	signature:(Canvas canvas)
+onDraw	TestCanvas.java	/^	                protected void onDraw(Canvas canvas) {$/;"	m	class:TestCanvas.MyView	access:protected	signature:(Canvas canvas)
+onKeyDown	MapCanvas.java	/^  public boolean onKeyDown(int keyCode, KeyEvent event) {$/;"	m	class:MapCanvas	access:public	signature:(int keyCode, KeyEvent event)
+onShowMultitouch	TestActivity.java	/^	public void onShowMultitouch(View v){$/;"	m	class:TestActivity	access:public	signature:(View v)
+onShowTestCanvas	TestActivity.java	/^	public void onShowTestCanvas(View v){$/;"	m	class:TestActivity	access:public	signature:(View v)
+onShowUI	TestActivity.java	/^	public void onShowUI(View v) {$/;"	m	class:TestActivity	access:public	signature:(View v)
+onTouchEvent	MTView.java	/^    public boolean onTouchEvent(MotionEvent event) {  $/;"	m	class:MTView	access:public	signature:(MotionEvent event)
+onTouchEvent	MapCanvas.java	/^    public boolean onTouchEvent(MotionEvent event) {$/;"	m	class:MapCanvas.MyView	access:public	signature:(MotionEvent event)
+onTouchEvent	MultiTouch.java	/^  public boolean onTouchEvent(MotionEvent event)$/;"	m	class:MultiTouch	access:public	signature:(MotionEvent event)
+onTouchEvent	TestCanvas.java	/^	                public boolean onTouchEvent(MotionEvent event) {$/;"	m	class:TestCanvas.MyView	access:public	signature:(MotionEvent event)
+paint	MapCanvas.java	/^    private Paint paint = new Paint();$/;"	f	class:MapCanvas.MyView	file:	access:private
+path	MapCanvas.java	/^    Path path = new Path();$/;"	f	class:MapCanvas.MyView	access:default
+query	MapCanvas.java	/^    private void query(double x,double y){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double x,double y)
+rate	MapCanvas.java	/^    private double rate;\/\/全屏时比例$/;"	f	class:MapCanvas.MyView	file:	access:private
+run	QueryDataThread.java	/^	public void run()$/;"	m	class:QueryDataThread	access:public	signature:()
+scale	MTView.java	/^    private float scale = 1.0f;  $/;"	f	class:MTView	file:	access:private
+spacing	MapCanvas.java	/^    private double spacing(MotionEvent event) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(MotionEvent event)
+spacing	MultiTouch.java	/^  private float spacing(MotionEvent event)$/;"	m	class:MultiTouch	file:	access:private	signature:(MotionEvent event)
+surfaceChanged	MTView.java	/^    public void surfaceChanged(SurfaceHolder holder, int format, int width,  $/;"	m	class:MTView	access:public	signature:(SurfaceHolder holder, int format, int width, int height)
+surfaceCreated	MTView.java	/^    public void surfaceCreated(SurfaceHolder holder) {  $/;"	m	class:MTView	access:public	signature:(SurfaceHolder holder)
+surfaceDestroyed	MTView.java	/^    public void surfaceDestroyed(SurfaceHolder holder) {  $/;"	m	class:MTView	access:public	signature:(SurfaceHolder holder)
+textPaint	MTView.java	/^    private Paint textPaint = new Paint();  $/;"	f	class:MTView	file:	access:private
+touchPaints	MTView.java	/^    private Paint touchPaints[] = new Paint[MAX_TOUCHPOINTS];  $/;"	f	class:MTView	file:	access:private
+transData	MapCanvas.java	/^    private double transData(double f, double i) {$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double f, double i)
+view_h	MapCanvas.java	/^    int view_h = 400;$/;"	f	class:MapCanvas.MyView	access:default
+view_w	MapCanvas.java	/^    int view_w =300;$/;"	f	class:MapCanvas.MyView	access:default
+width	MTView.java	/^    private int width, height;  $/;"	f	class:MTView	file:	access:private
+zoom	MapCanvas.java	/^    private void zoom(double dis){$/;"	m	class:MapCanvas.MyView	file:	access:private	signature:(double dis)
+zoomIn	MapCanvas.java	/^    public void zoomIn() {$/;"	m	class:MapCanvas.MyView	access:public	signature:()
+zoomOut	MapCanvas.java	/^    public void zoomOut() {$/;"	m	class:MapCanvas.MyView	access:public	signature:()
