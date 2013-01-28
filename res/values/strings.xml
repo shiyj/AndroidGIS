@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, TestActivity!</string>
-    <string name="app_name">spatialite</string>
+    <string name="hello">Hello World, This is a demo from GeoInker!</string>
+    <string name="app_name">GeoInker</string>
+    <string name="show_text">Show in Text</string>
+    <string name="show_UI">Show in UI</string>
 </resources>

@@ -19,11 +19,5 @@
 		<activity android:name=".TestCanvas"
         		  android:label="@string/app_name">
         </activity>
-        <activity android:name=".MultitouchVisible"
-        		  android:label="@string/app_name">
-        </activity>
-        <activity android:name=".Touch"
-        		  android:label="@string/app_name">
-        </activity>
     </application>
 </manifest>

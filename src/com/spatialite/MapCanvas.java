@@ -14,6 +14,7 @@ import jsqlite.Exception;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
 import android.R.bool;
 import android.R.color;
@@ -37,6 +38,8 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,13 +54,20 @@ public class MapCanvas extends Activity {
 	public MapCanvas() throws Exception {
 		mGeomEnvelope = new Envelope();
 		mDatabase = new jsqlite.Database();
-		mDatabase.open("/mnt/sdcard/test-2.3.sqlite",
+		// mDatabase.open("/mnt/sdcard/test-2.3.sqlite",
+		// jsqlite.Constants.SQLITE_OPEN_READONLY);
+		mDatabase.open("/mnt/sdcard/test.sqlite",
 				jsqlite.Constants.SQLITE_OPEN_READONLY);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Hide the title bar
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// set the full to screen
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		mProgressDialog = new ProgressDialog(this);
 		mProgressDialog.setTitle("Getting data");
 		mProgressDialog.setMessage("***I'm Loading***");
@@ -91,7 +101,7 @@ public class MapCanvas extends Activity {
 		private static final int DRAG = 2;
 		private static final int SELECT = 3;
 
-		private ArrayList<Geometry> m_geoms = new ArrayList<Geometry>();
+		private ArrayList<Geometry> m_geoms;
 		private Paint paint = new Paint();
 		// 设置默认模式
 		private int m_nMode = DRAG;
@@ -120,6 +130,7 @@ public class MapCanvas extends Activity {
 		@Override
 		protected void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
+			Log.w("绘图", "开始绘图");
 			view_w = getWidth();
 			view_h = getHeight();
 
@@ -131,6 +142,7 @@ public class MapCanvas extends Activity {
 				return;
 			}
 			DrawGeomtry(canvas);
+			Log.w("绘图", "绘图结束");
 		}
 
 		@Override
@@ -218,13 +230,13 @@ public class MapCanvas extends Activity {
 
 		private void ExecuedZoom(double zoomRate) {
 			double originx, originy, destx, desty;
-			originx = transData(view_w / 2, 0);
-			originy = transData(view_h / 2, 1);
+			originx = antTransData(view_w / 2, 0);
+			originy = antTransData(view_h / 2, 1);
 			leavel += zoomRate * leavel;
 			if (!ValidateLeavel())
 				return;
-			destx = transData(view_w / 2, 0);
-			desty = transData(view_h / 2, 1);
+			destx = antTransData(view_w / 2, 0);
+			desty = antTransData(view_h / 2, 1);
 			dx += destx - originx;
 			dy += desty - originy;
 			ValidateDragDistance();
@@ -348,11 +360,9 @@ public class MapCanvas extends Activity {
 			} else if (type.equals("Point")) {
 				paint.setColor(Color.RED);
 				paint.setStyle(Style.FILL);
-				Log.v("点绘制", "开始绘图");
 				Point pt = (Point) geometry;
 				canvas.drawCircle((float) transData(pt.getX(), 0),
 						(float) transData(pt.getY(), 1), 10, paint);
-				Log.v("点绘制", "结束绘图");
 			}
 
 		}
@@ -360,12 +370,18 @@ public class MapCanvas extends Activity {
 		/**
 		 * @param canvas
 		 * @param mulLines
-		 *            no multilines in multilines are support right now. shiyj
-		 *            2013.01.22
+		 * 
 		 */
 		private void DrawLineStrings(Canvas canvas, Geometry geometry) {
+			// double distanceTolerance = 5/rate;
+			// if (distanceTolerance > 0.001) {
+			// DouglasPeuckerSimplifier lineSimplifier = new
+			// DouglasPeuckerSimplifier(geometry);
+			// lineSimplifier.setDistanceTolerance(distanceTolerance);
+			// lineSimplifier.setEnsureValid(false);
+			// geometry = lineSimplifier.getResultGeometry();
+			// }
 			String type = geometry.getGeometryType();
-
 			if (type.equals("MultiLineString")) {
 				int len = geometry.getNumGeometries();
 				for (int i = 0; i < len; i++) {
@@ -383,15 +399,17 @@ public class MapCanvas extends Activity {
 							(float) transData(ptStart.getY(), 1),
 							(float) transData(ptStop.getX(), 0),
 							(float) transData(ptStop.getY(), 1), paint);
+					ptStart = null;
+					ptStop = null;
 				}
 			}
+			geometry = null;
 		}
 
 		/**
 		 * @param canvas
 		 * @param mulPolygon
-		 *            no islands is support (by jts geometry) right now. shiyj
-		 *            2013.01.22
+		 * 
 		 */
 		private void DrawPolygons(Canvas canvas, Geometry geometry) {
 			String type = geometry.getGeometryType();
@@ -480,14 +498,15 @@ public class MapCanvas extends Activity {
 							.intValue());
 					break;
 				case MessageType.SEND_GEOMETRIES:
-					m_geoms.clear();
+					if (null != m_geoms) {
+						m_geoms.clear();
+					}
 					m_geoms = (ArrayList<Geometry>) msg.obj;
 					if (null == m_geoms) {
-						Log.v("绘图", "未取得数据……");
+						Log.w("绘图", "未取得数据……");
 						mProgressDialog.dismiss();
 						return;
 					}
-					Log.v("绘图", "转化结束……");
 					mProgressDialog.dismiss();
 					postInvalidate();
 					break;

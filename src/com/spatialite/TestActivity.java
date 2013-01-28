@@ -49,15 +49,6 @@ public class TestActivity  extends Activity {
 		Intent intent = new Intent(TestActivity.this,MapCanvas.class);
 		startActivityForResult(intent,0);
 	}
-	public void onShowTestCanvas(View v){
-		//Intent intent = new Intent(TestActivity.this,TestCanvas.class);
-		Intent intent = new Intent(TestActivity.this,Touch.class);
-		startActivityForResult(intent,0);
-	}
-	public void onShowMultitouch(View v){
-		Intent intent = new Intent(TestActivity.this,MultitouchVisible.class);
-		startActivityForResult(intent,0);
-	}
 	public void onClick(View v) {
 		if(v.getId() == R.id.button1){
 			getData();

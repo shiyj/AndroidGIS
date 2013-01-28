@@ -34,9 +34,10 @@ public class QueryDataThread extends Thread {
 			getExtendSQL += "extent_min_x, extent_min_y, ";
 			getExtendSQL += "extent_max_x, extent_max_y ";
 			getExtendSQL += "FROM layer_statistics ";
-			getExtendSQL += "WHERE table_name = 'Regions'";
+			getExtendSQL += "WHERE table_name = 'Polygon'";
 
 			Stmt extStmt = mDatabase.prepare(getExtendSQL);
+			getExtendSQL = null;
 			if (extStmt.step()) {
 				int layer_length = extStmt.column_int(0);
 				mMsg.obj = layer_length;
@@ -49,26 +50,28 @@ public class QueryDataThread extends Thread {
 				env[3] = extStmt.column_double(4);
 				mMsg = mHandler.obtainMessage();
 				mMsg.obj = env;
+				env = null;
 				mMsg.what = MessageType.SEND_ENVELOPE;
 				mMsg.sendToTarget();
 			}
-			// Create query
-			// String query =
-			// "SELECT name, AsBinary(ST_Transform(geometry,4326)) from Towns where peoples > 350000";
-			// String query =
-			// "SELECT name, AsBinary(Simplify(ST_Transform(geometry,4326),0.01)) from HighWays";
-			String query = "SELECT name, AsBinary(geometry) from Regions";
-			Stmt stmt = mDatabase.prepare(query);
 
+			// Create query
+			String query = "SELECT name, AsBinary(geometry) from Polygon";
+			// String query =
+			// "SELECT name, AsBinary(geometry) from HighWays limit 100";
+			// String query = "SELECT name, AsBinary(geometry) from Regions";
+			Stmt stmt = mDatabase.prepare(query);
+			query = null;
 			ArrayList<Geometry> geoms = new ArrayList<Geometry>();
 			// get the fist geometry type as the who geometry type;
-			Log.v("查询", "开始查询时间……");
+			Log.w("查询", "开始查询时间……");
 			int i = 0;
+			WKBReader wkbReader = new WKBReader();
 			while (stmt.step()) {
 				// Create JTS geometry from binary representation
 				// returned from database
 				try {
-					geoms.add(new WKBReader().read(stmt.column_bytes(1)));
+					geoms.add(wkbReader.read(stmt.column_bytes(1)));
 					mMsg = mHandler.obtainMessage();
 					mMsg.obj = i++;
 					mMsg.what = MessageType.SEND_PROGRESS;
@@ -77,11 +80,14 @@ public class QueryDataThread extends Thread {
 					Log.e("ERR!!!", e.getMessage());
 				}
 			}
-			Log.v("查询", "结束查询，开始转换……");
+			wkbReader = null;
+			Log.w("查询", "结束查询，开始转换……");
 			stmt.close();
+			stmt = null;
 			mMsg = mHandler.obtainMessage();
 			mMsg.obj = geoms;
 			mMsg.what = MessageType.SEND_GEOMETRIES;
+			geoms = null;
 			mMsg.sendToTarget();
 		} catch (Exception e) {
 			Log.e("ERR!!!", e.getMessage());
