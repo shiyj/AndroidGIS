@@ -10,18 +10,11 @@
     android:text="@string/hello"
     />
 <Button 
-	android:text="@string/show_text" 
-	android:id="@+id/button1" 
+	android:text="@string/load_last" 
+	android:id="@+id/loadLast" 
 	android:layout_width="match_parent" 
 	android:layout_height="wrap_content" 
 	android:onClick="onClick"
-	></Button>
-<Button 
-	android:text="@string/show_UI" 
-	android:id="@+id/button2" 
-	android:layout_width="match_parent" 
-	android:layout_height="wrap_content" 
-	android:onClick="onShowUI"
 	></Button>
 <ListView android:id="@+id/listView1" android:layout_width="match_parent" android:layout_height="match_parent"></ListView>
 

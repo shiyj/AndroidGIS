@@ -11,16 +11,16 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
+        public static final int file=0x7f020000;
+        public static final int folder=0x7f020001;
+        public static final int icon=0x7f020002;
     }
     public static final class id {
         public static final int ItemName=0x7f050004;
-        public static final int ItemText=0x7f050005;
-        public static final int RelativeLayout01=0x7f050003;
-        public static final int button1=0x7f050006;
-        public static final int button2=0x7f050007;
+        public static final int fileTypeIcon=0x7f050003;
         public static final int imageView1=0x7f050002;
-        public static final int listView1=0x7f050008;
+        public static final int listView1=0x7f050006;
+        public static final int loadLast=0x7f050005;
         public static final int zoom_in=0x7f050000;
         public static final int zoom_out=0x7f050001;
     }
@@ -32,7 +32,6 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f040001;
         public static final int hello=0x7f040000;
-        public static final int show_UI=0x7f040003;
-        public static final int show_text=0x7f040002;
+        public static final int load_last=0x7f040002;
     }
 }

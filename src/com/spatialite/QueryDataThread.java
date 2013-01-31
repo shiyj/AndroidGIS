@@ -11,7 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.index.strtree.STRtree;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 
@@ -62,16 +64,19 @@ public class QueryDataThread extends Thread {
 			// String query = "SELECT name, AsBinary(geometry) from Regions";
 			Stmt stmt = mDatabase.prepare(query);
 			query = null;
-			ArrayList<Geometry> geoms = new ArrayList<Geometry>();
+			//ArrayList<Geometry> geoms = new ArrayList<Geometry>();
 			// get the fist geometry type as the who geometry type;
 			Log.w("查询", "开始查询时间……");
 			int i = 0;
 			WKBReader wkbReader = new WKBReader();
+			STRtree indexRtree = new STRtree();
 			while (stmt.step()) {
 				// Create JTS geometry from binary representation
 				// returned from database
 				try {
-					geoms.add(wkbReader.read(stmt.column_bytes(1)));
+					//geoms.add(wkbReader.read(stmt.column_bytes(1)));
+					Geometry geometry = wkbReader.read(stmt.column_bytes(1));
+					indexRtree.insert(geometry.getEnvelopeInternal(),geometry);
 					mMsg = mHandler.obtainMessage();
 					mMsg.obj = i++;
 					mMsg.what = MessageType.SEND_PROGRESS;
@@ -85,9 +90,9 @@ public class QueryDataThread extends Thread {
 			stmt.close();
 			stmt = null;
 			mMsg = mHandler.obtainMessage();
-			mMsg.obj = geoms;
+			mMsg.obj = indexRtree;
 			mMsg.what = MessageType.SEND_GEOMETRIES;
-			geoms = null;
+			//geoms = null;
 			mMsg.sendToTarget();
 		} catch (Exception e) {
 			Log.e("ERR!!!", e.getMessage());

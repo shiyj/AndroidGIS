@@ -1,25 +1,12 @@
 package com.spatialite;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
-import jsqlite.Callback;
-import jsqlite.Stmt;
 import jsqlite.Exception;
 //引入JTS
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKBReader;
-import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
-
-import android.R.bool;
-import android.R.color;
-import android.R.integer;
-import android.R.string;
+import com.vividsolutions.jts.index.strtree.STRtree;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,25 +14,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.graphics.Paint.Style;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MapCanvas extends Activity {
 
-	private static final String TAG = TestActivity.class.getName();
 	private final jsqlite.Database mDatabase;
 	private Envelope mGeomEnvelope;
 	private MyView mView;
@@ -101,7 +82,8 @@ public class MapCanvas extends Activity {
 		private static final int DRAG = 2;
 		private static final int SELECT = 3;
 
-		private ArrayList<Geometry> m_geoms;
+		//private ArrayList<Geometry> m_geoms;
+		private STRtree m_geomsIndex;
 		private Paint paint = new Paint();
 		// 设置默认模式
 		private int m_nMode = DRAG;
@@ -138,7 +120,7 @@ public class MapCanvas extends Activity {
 			paint.setStyle(Style.FILL);
 			canvas.drawText("Hello", 10, 50, paint);
 			// canvas.drawRect(new Rect(0, 0, view_w, view_h), paint);
-			if (null == m_geoms) {
+			if (null == m_geomsIndex) {
 				return;
 			}
 			DrawGeomtry(canvas);
@@ -325,11 +307,29 @@ public class MapCanvas extends Activity {
 			double y = event.getY(0) - event.getY(1);
 			return Math.sqrt(x * x + y * y);
 		}
-
+		private Envelope searchEnv = new Envelope();
+		private void setCurrentEnvelop (double x1,double x2,double  y1,double  y2) {
+			double xx1, xx2, yy1, yy2;
+			xx1 = antTransData(x1, 0);
+			xx2 = antTransData(x2, 0);
+			yy1 = antTransData(y1, 1);
+			yy2 = antTransData(y2, 1);
+			searchEnv.init(xx1, xx2, yy1, yy2);
+		}
+		private void setCurrentEnvelop () {
+			double xx1, xx2, yy1, yy2;
+			xx1 = antTransData(0, 0);
+			xx2 = antTransData(view_w, 0);
+			yy1 = antTransData(view_h, 1);
+			yy2 = antTransData(0, 1);
+			searchEnv.init(xx1, xx2, yy1, yy2);
+		}
 		private void DrawGeomtry(Canvas canvas) {
-			int geoms_len = m_geoms.size();
+			setCurrentEnvelop();
+			List<Geometry> geoms = m_geomsIndex.query(searchEnv);
+			int geoms_len = geoms.size();
 			for (int i = 0; i < geoms_len; i++) {
-				Geometry geometry = m_geoms.get(i);
+				Geometry geometry = geoms.get(i);
 				String type = geometry.getGeometryType();
 
 				if (type.equals("MultiPoint")) {
@@ -433,12 +433,7 @@ public class MapCanvas extends Activity {
 
 		private void DrawPolygon(Canvas canvas, LineString polygon,
 				Boolean isInerRing) {
-			if (isInerRing) {
-				paint.setColor(Color.GRAY);
-				paint.setAlpha(0);
-			} else {
-				paint.setColor(Color.BLUE);
-			}
+			paint.setColor(Color.DKGRAY);
 			paint.setStyle(Style.FILL);
 			path.reset();
 			int len = polygon.getNumPoints();
@@ -450,11 +445,21 @@ public class MapCanvas extends Activity {
 			path.moveTo((float) transData(pt0.getX(), 0),
 					(float) transData(pt0.getY(), 1));
 			for (int i = 1; i < len; i++) {
+				Point ptStart = polygon.getPointN(i-1);
 				Point pt = polygon.getPointN(i);
 				path.lineTo((float) transData(pt.getX(), 0),
 						(float) transData(pt.getY(), 1));
+				canvas.drawLine((float) transData(ptStart.getX(), 0),
+						(float) transData(ptStart.getY(), 1),
+						(float) transData(pt.getX(), 0),
+						(float) transData(pt.getY(), 1),paint);
 			}
 			path.close();
+			if (isInerRing) {
+				paint.setColor(Color.BLACK);
+			} else {
+				paint.setColor(Color.BLUE);
+			}
 			canvas.drawPath(path, paint);
 		}
 
@@ -498,11 +503,8 @@ public class MapCanvas extends Activity {
 							.intValue());
 					break;
 				case MessageType.SEND_GEOMETRIES:
-					if (null != m_geoms) {
-						m_geoms.clear();
-					}
-					m_geoms = (ArrayList<Geometry>) msg.obj;
-					if (null == m_geoms) {
+					m_geomsIndex = (STRtree) msg.obj;
+					if (null == m_geomsIndex) {
 						Log.w("绘图", "未取得数据……");
 						mProgressDialog.dismiss();
 						return;

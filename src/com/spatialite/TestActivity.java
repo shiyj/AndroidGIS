@@ -1,149 +1,189 @@
 package com.spatialite;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-
-import jsqlite.Callback;
-import jsqlite.Exception;
-import jsqlite.Stmt;
+import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class TestActivity  extends Activity {
+public class TestActivity extends Activity {
+	private String cacheFileName = "geoinker_db_dir.gi";
+	private String currentDirString = "";
+	private File currentFileParent;
+	private File[] currentFiles;
+	private ListView list;
+	Context context;
 
-	private static final String TAG = TestActivity.class.getName();
-	private Context context;
-	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
+	private void geoinkerInit() {
+		currentFileParent = new File("/mnt/sdcard/");
+		if (!currentFileParent.exists()) {
+			AlertDialog.Builder exitApp = new Builder(this);
+			exitApp.setTitle("No SDCard!");
+			exitApp.setMessage("No SDCard are detected!");
+			return;
+		}
+		File dir1 = new File("/mnt/sdcard/GeoInker");
+		mkdatadir(dir1);
+		File dir2 = new File("/mnt/sdcard/GeoInker/database");
+		mkdatadir(dir2);
+		File dir3 = new File("/mnt/sdcard/GeoInker/shp");
+		mkdatadir(dir3);
+		currentFiles = currentFileParent.listFiles();
+		inflateListView(currentFiles);
+		currentDirString = readLastDir();
+		if (null == currentDirString) {
+			Button bt = (Button) findViewById(R.id.loadLast);
+			bt.setEnabled(false);
+		}
+
+	}
+
+	private void mkdatadir(File dir) {
+		if (!dir.exists()) {
+			dir.mkdir();
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context=this;
+		context = this;
 		setContentView(R.layout.main);
+
+		list = (ListView) findViewById(R.id.listView1);
+		// binding the click listener of each file item in the listview
+		list.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view,
+					int position, long id) {
+				if (0 == position) {
+					currentFileParent = currentFileParent.getParentFile();
+					if (null == currentFileParent) {
+						Toast.makeText(TestActivity.this,
+								"This is the root directory!", Toast.LENGTH_LONG)
+								.show();
+						return;
+					}
+					currentFiles = currentFileParent.listFiles();
+					inflateListView(currentFiles);
+					return;
+				}
+				position = position - 1;
+				if (currentFiles[position].isFile()) {
+					saveCurrentDir(currentFiles[position].getName());
+					return;
+				}
+
+				File[] tem = currentFiles[position].listFiles();
+				if (tem == null || tem.length == 0) {
+
+					Toast.makeText(TestActivity.this,
+							"No File in this directory", Toast.LENGTH_LONG)
+							.show();
+				} else {
+					currentFileParent = currentFiles[position];
+					currentFiles = tem;
+					inflateListView(currentFiles);
+				}
+
+			}
+		});
+
+		geoinkerInit();
 	}
-	private void bindList(){
-		ListView list = (ListView) findViewById(R.id.listView1);    
-		SimpleAdapter mSchedule = new SimpleAdapter(context,
-				listItem,
-				R.layout.listview_item,
-				new String[] {"ItemName", "ItemText"},
-				new int[] {R.id.ItemName,R.id.ItemText});  
-		//ListAdapter adapter= new ListAdapter();
+
+	public void onShowUI(View v) {
+		Intent intent = new Intent(TestActivity.this, MapCanvas.class);
+		startActivityForResult(intent, 0);
+	}
+
+	public void onClick(View v) {
+		if (v.getId() == R.id.loadLast) {
+
+		}
+	}
+
+	/**
+	 * @param files
+	 *            the currend directory files. flate the list view with the
+	 *            currend directory file
+	 */
+	private void inflateListView(File[] files) {
+		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+		Map<String, Object> listItemUp = new HashMap<String, Object>();
+		listItemUp.put("icon", R.drawable.folder);
+		listItemUp.put("filename", " ..");
+		listItems.add(listItemUp);
+		for (int i = 0; i < files.length; i++) {
+			Map<String, Object> listItem = new HashMap<String, Object>();
+			// choose the icon of file.
+			if (files[i].isDirectory()) {
+				listItem.put("icon", R.drawable.folder);
+			} else {
+				listItem.put("icon", R.drawable.file);
+			}
+			// set the file name into text list
+			listItem.put("filename", files[i].getName());
+			listItems.add(listItem);
+		}
+		SimpleAdapter mSchedule = new SimpleAdapter(context, listItems,
+				R.layout.listview_item, new String[] { "icon", "filename" },
+				new int[] { R.id.fileTypeIcon, R.id.ItemName });
 		list.setAdapter(mSchedule);
 	}
-	public void onShowUI(View v) {
-		Intent intent = new Intent(TestActivity.this,MapCanvas.class);
-		startActivityForResult(intent,0);
-	}
-	public void onClick(View v) {
-		if(v.getId() == R.id.button1){
-			getData();
-			bindList();
-		}
-	}
-	private void getData(){
+
+	private void saveCurrentDir(String content) {
 		try {
-			Class.forName("SQLite.JDBCDriver").newInstance();
-			jsqlite.Database db = new jsqlite.Database();
-
-	        // 检测/创建数据库的文件夹  
-	        File dir = new File("/mnt/sdcard/");  
-	        if (!dir.exists()) {  
-	            dir.mkdir();  
-	        }  
-	        // 如果文件夹已经存在了  
-	        else {  
-	            // 检查文件是否存在  
-	            dir = new File("/mnt/sdcard/", "test-2.3.sqlite");  
-	            if (!dir.exists()){
-	            	Log.v(TAG,"不存在地理数据库！");
-	            	Toast.makeText(getApplicationContext(), "不存在数据库",
-	            		     Toast.LENGTH_SHORT).show();
-	                return; 
-	            } 
-	        }  
-			//db.open(Environment.getExternalStorageDirectory() + "/download/test-2.3.sqlite",jsqlite.Constants.SQLITE_OPEN_READONLY);
-	        Toast.makeText(getApplicationContext(), "正在加载数据库……",
-				     Toast.LENGTH_SHORT).show();
-			db.open("/mnt/sdcard/test-2.3.sqlite",jsqlite.Constants.SQLITE_OPEN_READONLY);
-			listItem.clear();
-			Callback cb = new Callback() {
-				@Override
-				public void columns(String[] coldata) {
-					Log.v(TAG, "Columns: " + Arrays.toString(coldata));
-					
-				}
-
-				@Override
-				public void types(String[] types) {
-					Log.v(TAG, "Types: " + Arrays.toString(types));
-				}
-
-				@Override
-				public boolean newrow(String[] rowdata) {
-					Log.v(TAG, "Row: " + Arrays.toString(rowdata));
-					HashMap<String, Object> map = new HashMap<String, Object>();  
-			        map.put("ItemText", rowdata[2]);
-			        map.put("ItemName", rowdata[0]);
-			        listItem.add(map);  
-					// Careful (from parent javadoc):
-					// "If true is returned the running SQLite query is aborted."
-					return false;
-				}
-			};
-			
-			String query = "SELECT name, peoples, AsText(Geometry) from Towns where peoples > 350000";
-			Stmt st = db.prepare(query);
-			
-			//db.exec("select Distance(PointFromText('point(-77.35368 39.04106)', 4326), PointFromText('point(-77.35581 39.01725)', 4326));", cb);
-			db.exec("SELECT name, peoples, AsText(Geometry), GeometryType(Geometry), NumPoints(Geometry), SRID(Geometry), IsValid(Geometry) from Towns where peoples > 350000;", cb);
-			//db.exec("SELECT Distance( Transform(MakePoint(4.430174797, 51.01047063, 4326), 32631), Transform(MakePoint(4.43001276, 51.01041585, 4326),32631));", cb);
-			
-			
-			/*
-			Class.forName("SQLite.JDBCDriver").newInstance();
-			Connection conn = DriverManager.getConnection("jdbc:sqlite:/mnt/sdcard/download/test-2.3.sqlite");
-			
-			String query = "SELECT name, peoples, ST_GeometryType(Geometry) from Towns where peoples > 350000";
-			try
-		    {
-		      Statement st = conn.createStatement();
-		      ResultSet rs = st.executeQuery(query);
-		      while (rs.next())
-		      {
-		    	  Log.v(TAG, "Name: " + rs.getString("name"));
-		      }
-		    }
-		    catch (SQLException ex)
-		    {
-		    	ex.printStackTrace();
-		    }
-		    */
-
-		} catch (IllegalAccessException e) {
+			FileOutputStream outputStream = openFileOutput(cacheFileName,
+					Activity.MODE_PRIVATE);
+			outputStream.write(content.getBytes());
+			outputStream.flush();
+			outputStream.close();
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		/*} catch (SQLException e) {
-			e.printStackTrace();*/
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	private String readLastDir() {
+		try {
+			FileInputStream inputStream = this.openFileInput(cacheFileName);
+			byte[] bytes = new byte[1024];
+			ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+			while (inputStream.read(bytes) != -1) {
+				arrayOutputStream.write(bytes, 0, bytes.length);
+			}
+			inputStream.close();
+			arrayOutputStream.close();
+			return new String(arrayOutputStream.toByteArray());
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			return null;
+		}
+	}
+
 }
