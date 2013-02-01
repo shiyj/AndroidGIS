@@ -1,15 +1,28 @@
 package com.spatialite;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
 import jsqlite.Exception;
+import jsqlite.Stmt;
 //引入JTS
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.index.strtree.STRtree;
+import com.vividsolutions.jts.io.WKBReader;
+
+import android.R.string;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,34 +39,45 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class MapCanvas extends Activity {
-
+	private String cacheFileName = "geoinker_db_dir.gik";
 	private final jsqlite.Database mDatabase;
 	private Envelope mGeomEnvelope;
 	private MyView mView;
 	private ProgressDialog mProgressDialog;
+	private Intent mIntent;
 
-	public MapCanvas() throws Exception {
+	public MapCanvas() {
 		mGeomEnvelope = new Envelope();
 		mDatabase = new jsqlite.Database();
-		// mDatabase.open("/mnt/sdcard/test-2.3.sqlite",
-		// jsqlite.Constants.SQLITE_OPEN_READONLY);
-		mDatabase.open("/mnt/sdcard/test.sqlite",
-				jsqlite.Constants.SQLITE_OPEN_READONLY);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mIntent = this.getIntent();
+		Bundle dataBundle = mIntent.getExtras();
+		String dataSource = dataBundle.getString("datasource");
+		// open the datasource
+		try {
+			mDatabase.open(dataSource, jsqlite.Constants.SQLITE_OPEN_READONLY);
+			// if open successed,save the directory for next launch
+			saveCurrentDir(dataSource);
+
+		} catch (Exception e) {
+			throwErrToMain(e.getMessage());
+		}
 		// Hide the title bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// set the full to screen
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		mProgressDialog = new ProgressDialog(this);
 		mProgressDialog.setTitle("Getting data");
 		mProgressDialog.setMessage("***I'm Loading***");
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mView = new MyView(this);
+		showTabelSelect(getGeomtryTable());
 		setContentView(mView);
 	}
 
@@ -69,6 +93,75 @@ public class MapCanvas extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	private void saveCurrentDir(String content) {
+		try {
+			FileOutputStream outputStream = openFileOutput(cacheFileName,
+					Activity.MODE_PRIVATE);
+			outputStream.write(content.getBytes());
+			outputStream.flush();
+			outputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void showTabelSelect(ArrayList<String> tableName) {
+		// not a spatialite database
+		if (null == tableName || 0 == tableName.size()) {
+			throwErrToMain("not a spatialite");
+			return;
+		}
+		String[] tableNameStrings = (String[]) tableName
+				.toArray(new String[tableName.size()]);
+		tableName = null;
+		AlertDialog.Builder selectTableBuilder = new Builder(this);
+		selectTableBuilder.setTitle("Select the layer(s)");
+		selectTableBuilder.setMultiChoiceItems(tableNameStrings, null, null);
+		OnClickListener loadListener = new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				mView.getData();
+				dialog.dismiss();
+			}
+		};
+		selectTableBuilder.setPositiveButton("OK", loadListener);
+		OnClickListener cancleListener = new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MapCanvas.this.finish();
+			}
+		};
+		selectTableBuilder.setNegativeButton("Cancle", cancleListener);
+		selectTableBuilder.create().show();
+	}
+
+	private ArrayList<String> getGeomtryTable() {
+		try {
+			ArrayList<String> tableName = new ArrayList<String>();
+			String query = "SELECT DISTINCT f_table_name from geometry_columns";
+			Stmt stmt = mDatabase.prepare(query);
+			query = null;
+			while (stmt.step()) {
+				tableName.add(stmt.column_string(0));
+			}
+			stmt.close();
+			return tableName;
+		} catch (Exception e) {
+			throwErrToMain(e.getMessage());
+			return null;
+		}
+	}
+
+	public void throwErrToMain(String errmsg) {
+		Bundle errBundle = new Bundle();
+		errBundle.putString("err", errmsg);
+		mIntent.putExtras(errBundle);
+		this.setResult(RESULT_OK, mIntent);
+		this.finish();
+	}
+
 	/**
 	 * @author engin
 	 * 
@@ -82,7 +175,7 @@ public class MapCanvas extends Activity {
 		private static final int DRAG = 2;
 		private static final int SELECT = 3;
 
-		//private ArrayList<Geometry> m_geoms;
+		// private ArrayList<Geometry> m_geoms;
 		private STRtree m_geomsIndex;
 		private Paint paint = new Paint();
 		// 设置默认模式
@@ -104,7 +197,6 @@ public class MapCanvas extends Activity {
 
 		MyView(Context context) {
 			super(context);
-			getData();
 		}
 
 		Path path = new Path();
@@ -307,8 +399,11 @@ public class MapCanvas extends Activity {
 			double y = event.getY(0) - event.getY(1);
 			return Math.sqrt(x * x + y * y);
 		}
+
 		private Envelope searchEnv = new Envelope();
-		private void setCurrentEnvelop (double x1,double x2,double  y1,double  y2) {
+
+		private void setCurrentEnvelop(double x1, double x2, double y1,
+				double y2) {
 			double xx1, xx2, yy1, yy2;
 			xx1 = antTransData(x1, 0);
 			xx2 = antTransData(x2, 0);
@@ -316,7 +411,8 @@ public class MapCanvas extends Activity {
 			yy2 = antTransData(y2, 1);
 			searchEnv.init(xx1, xx2, yy1, yy2);
 		}
-		private void setCurrentEnvelop () {
+
+		private void setCurrentEnvelop() {
 			double xx1, xx2, yy1, yy2;
 			xx1 = antTransData(0, 0);
 			xx2 = antTransData(view_w, 0);
@@ -324,6 +420,7 @@ public class MapCanvas extends Activity {
 			yy2 = antTransData(0, 1);
 			searchEnv.init(xx1, xx2, yy1, yy2);
 		}
+
 		private void DrawGeomtry(Canvas canvas) {
 			setCurrentEnvelop();
 			List<Geometry> geoms = m_geomsIndex.query(searchEnv);
@@ -445,14 +542,14 @@ public class MapCanvas extends Activity {
 			path.moveTo((float) transData(pt0.getX(), 0),
 					(float) transData(pt0.getY(), 1));
 			for (int i = 1; i < len; i++) {
-				Point ptStart = polygon.getPointN(i-1);
+				Point ptStart = polygon.getPointN(i - 1);
 				Point pt = polygon.getPointN(i);
 				path.lineTo((float) transData(pt.getX(), 0),
 						(float) transData(pt.getY(), 1));
 				canvas.drawLine((float) transData(ptStart.getX(), 0),
 						(float) transData(ptStart.getY(), 1),
 						(float) transData(pt.getX(), 0),
-						(float) transData(pt.getY(), 1),paint);
+						(float) transData(pt.getY(), 1), paint);
 			}
 			path.close();
 			if (isInerRing) {
@@ -512,13 +609,16 @@ public class MapCanvas extends Activity {
 					mProgressDialog.dismiss();
 					postInvalidate();
 					break;
+				case MessageType.SEND_ERR:
+					MapCanvas.this.throwErrToMain(msg.obj.toString());
+					break;
 				default:
 					break;
 				}
 			}
 		};
 
-		private void getData() {
+		public void getData() {
 			QueryDataThread qdThread = new QueryDataThread(mDatabase,
 					handlerGetData);
 			qdThread.start();

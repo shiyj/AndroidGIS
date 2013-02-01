@@ -26,7 +26,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class TestActivity extends Activity {
-	private String cacheFileName = "geoinker_db_dir.gi";
+	private String cacheFileName = "geoinker_db_dir.gik";
 	private String currentDirString = "";
 	private File currentFileParent;
 	private File[] currentFiles;
@@ -47,6 +47,7 @@ public class TestActivity extends Activity {
 		mkdatadir(dir2);
 		File dir3 = new File("/mnt/sdcard/GeoInker/shp");
 		mkdatadir(dir3);
+		currentFileParent = dir1;
 		currentFiles = currentFileParent.listFiles();
 		inflateListView(currentFiles);
 		currentDirString = readLastDir();
@@ -89,7 +90,7 @@ public class TestActivity extends Activity {
 				}
 				position = position - 1;
 				if (currentFiles[position].isFile()) {
-					saveCurrentDir(currentFiles[position].getName());
+					openDataSource(currentFiles[position].getPath());
 					return;
 				}
 
@@ -111,11 +112,34 @@ public class TestActivity extends Activity {
 		geoinkerInit();
 	}
 
-	public void onShowUI(View v) {
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		switch (resultCode)
+		{
+			//结果返回
+		case RESULT_OK:
+			//获取Bundle的数据
+			Bundle bl= data.getExtras();
+			String errString=bl.getString("err");
+			AlertDialog.Builder errOpenDB = new Builder(context);
+			errOpenDB.setTitle("Can't open the data!");
+			errOpenDB.setMessage(errString);
+			errOpenDB.setPositiveButton("OK", null);
+			errOpenDB.create().show();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void openDataSource(String path){
 		Intent intent = new Intent(TestActivity.this, MapCanvas.class);
+		Bundle dataSource = new Bundle();
+		dataSource.putString("datasource", path);
+		intent.putExtras(dataSource);
 		startActivityForResult(intent, 0);
 	}
-
 	public void onClick(View v) {
 		if (v.getId() == R.id.loadLast) {
 
@@ -151,19 +175,7 @@ public class TestActivity extends Activity {
 		list.setAdapter(mSchedule);
 	}
 
-	private void saveCurrentDir(String content) {
-		try {
-			FileOutputStream outputStream = openFileOutput(cacheFileName,
-					Activity.MODE_PRIVATE);
-			outputStream.write(content.getBytes());
-			outputStream.flush();
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+
 
 	private String readLastDir() {
 		try {
@@ -179,9 +191,9 @@ public class TestActivity extends Activity {
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
 			return null;
 		}
 	}

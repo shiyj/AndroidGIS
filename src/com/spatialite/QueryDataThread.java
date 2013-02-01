@@ -29,8 +29,8 @@ public class QueryDataThread extends Thread {
 
 	@Override
 	public void run() {
+		Message mMsg = mHandler.obtainMessage();
 		try {
-			Message mMsg = mHandler.obtainMessage();
 			// checking the Vector Layers
 			String getExtendSQL = "SELECT row_count, ";
 			getExtendSQL += "extent_min_x, extent_min_y, ";
@@ -95,7 +95,11 @@ public class QueryDataThread extends Thread {
 			//geoms = null;
 			mMsg.sendToTarget();
 		} catch (Exception e) {
-			Log.e("ERR!!!", e.getMessage());
+			//Log.e("ERR!!!", e.getMessage());
+			mMsg = mHandler.obtainMessage();
+			mMsg.obj = e.getMessage();
+			mMsg.what = MessageType.SEND_ERR;
+			mMsg.sendToTarget();
 		}
 	}
 }

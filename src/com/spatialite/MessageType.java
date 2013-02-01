@@ -5,4 +5,5 @@ public class MessageType {
 	public static final int SEND_ENVELOPE = 1;
 	public static final int SEND_PROGRESS = 2;
 	public static final int SEND_GEOMETRIES = 3;
+	public static final int SEND_ERR = 9;
 }
