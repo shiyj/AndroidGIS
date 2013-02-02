@@ -21,22 +21,34 @@ public class QueryDataThread extends Thread {
 
 	private final jsqlite.Database mDatabase;
 	private Handler mHandler;
+	private String mTableName;
 
 	public QueryDataThread(jsqlite.Database database, Handler handler) {
 		mDatabase = database;
 		mHandler = handler;
 	}
 
+	public void setTableName(String tableName) {
+		this.mTableName = tableName;
+	}
+
 	@Override
 	public void run() {
 		Message mMsg = mHandler.obtainMessage();
+		if (null == mTableName) {
+			mMsg.obj = "You must set the table name before you run the query thread!";
+			mMsg.what = MessageType.SEND_ERR;
+			mMsg.sendToTarget();
+			return;
+		}
 		try {
 			// checking the Vector Layers
 			String getExtendSQL = "SELECT row_count, ";
 			getExtendSQL += "extent_min_x, extent_min_y, ";
 			getExtendSQL += "extent_max_x, extent_max_y ";
 			getExtendSQL += "FROM layer_statistics ";
-			getExtendSQL += "WHERE table_name = 'Polygon'";
+			getExtendSQL += "WHERE table_name = '";
+			getExtendSQL += mTableName + "'";
 
 			Stmt extStmt = mDatabase.prepare(getExtendSQL);
 			getExtendSQL = null;
@@ -58,13 +70,14 @@ public class QueryDataThread extends Thread {
 			}
 
 			// Create query
-			String query = "SELECT name, AsBinary(geometry) from Polygon";
+			String query = "SELECT AsBinary(geometry) from ";
+			query += mTableName;
 			// String query =
 			// "SELECT name, AsBinary(geometry) from HighWays limit 100";
 			// String query = "SELECT name, AsBinary(geometry) from Regions";
 			Stmt stmt = mDatabase.prepare(query);
 			query = null;
-			//ArrayList<Geometry> geoms = new ArrayList<Geometry>();
+			// ArrayList<Geometry> geoms = new ArrayList<Geometry>();
 			// get the fist geometry type as the who geometry type;
 			Log.w("查询", "开始查询时间……");
 			int i = 0;
@@ -74,9 +87,10 @@ public class QueryDataThread extends Thread {
 				// Create JTS geometry from binary representation
 				// returned from database
 				try {
-					//geoms.add(wkbReader.read(stmt.column_bytes(1)));
-					Geometry geometry = wkbReader.read(stmt.column_bytes(1));
-					indexRtree.insert(geometry.getEnvelopeInternal(),geometry);
+					// geoms.add(wkbReader.read(stmt.column_bytes(1)));
+					Geometry geometry = wkbReader.read(stmt.column_bytes(0));
+					indexRtree.insert(geometry.getEnvelopeInternal(), geometry);
+					geometry = null;
 					mMsg = mHandler.obtainMessage();
 					mMsg.obj = i++;
 					mMsg.what = MessageType.SEND_PROGRESS;
@@ -92,10 +106,10 @@ public class QueryDataThread extends Thread {
 			mMsg = mHandler.obtainMessage();
 			mMsg.obj = indexRtree;
 			mMsg.what = MessageType.SEND_GEOMETRIES;
-			//geoms = null;
+			indexRtree = null;
 			mMsg.sendToTarget();
 		} catch (Exception e) {
-			//Log.e("ERR!!!", e.getMessage());
+			// Log.e("ERR!!!", e.getMessage());
 			mMsg = mHandler.obtainMessage();
 			mMsg.obj = e.getMessage();
 			mMsg.what = MessageType.SEND_ERR;

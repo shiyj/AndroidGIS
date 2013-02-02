@@ -3,6 +3,7 @@ package com.spatialite;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -110,19 +112,38 @@ public class MapCanvas extends Activity {
 	private void showTabelSelect(ArrayList<String> tableName) {
 		// not a spatialite database
 		if (null == tableName || 0 == tableName.size()) {
-			throwErrToMain("not a spatialite");
+			throwErrToMain("not a spatialite database");
 			return;
 		}
-		String[] tableNameStrings = (String[]) tableName
+		final String[] tableNameStrings = (String[]) tableName
 				.toArray(new String[tableName.size()]);
+		final boolean[] tableSelect = new boolean[tableName.size()];
 		tableName = null;
 		AlertDialog.Builder selectTableBuilder = new Builder(this);
 		selectTableBuilder.setTitle("Select the layer(s)");
-		selectTableBuilder.setMultiChoiceItems(tableNameStrings, null, null);
+		OnMultiChoiceClickListener multiLIstener = new OnMultiChoiceClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which,
+					boolean isChecked) {
+				tableSelect[which] = isChecked;
+			}
+		};
+		selectTableBuilder.setMultiChoiceItems(tableNameStrings, null,
+				multiLIstener);
 		OnClickListener loadListener = new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				mView.getData();
+				ArrayList<String> selectedTable = new ArrayList<String>();
+				for (int i = 0; i < tableSelect.length; i++) {
+					if (tableSelect[i]) {
+						selectedTable.add(tableNameStrings[i]);
+					}
+				}
+				if(0==selectedTable.size()){
+					throwErrToMain("You have not select a single layer!");
+					return;
+				}
+				mView.getData(selectedTable);
 				dialog.dismiss();
 			}
 		};
@@ -459,7 +480,7 @@ public class MapCanvas extends Activity {
 				paint.setStyle(Style.FILL);
 				Point pt = (Point) geometry;
 				canvas.drawCircle((float) transData(pt.getX(), 0),
-						(float) transData(pt.getY(), 1), 10, paint);
+						(float) transData(pt.getY(), 1), 2, paint);
 			}
 
 		}
@@ -596,6 +617,7 @@ public class MapCanvas extends Activity {
 					leavel = rate;
 					break;
 				case MessageType.SEND_PROGRESS:
+					
 					mProgressDialog.setProgress(((Integer) (msg.obj))
 							.intValue());
 					break;
@@ -618,11 +640,15 @@ public class MapCanvas extends Activity {
 			}
 		};
 
-		public void getData() {
-			QueryDataThread qdThread = new QueryDataThread(mDatabase,
-					handlerGetData);
-			qdThread.start();
-			qdThread = null;
+		public void getData(ArrayList<String> tableNames) {
+			for (int i = 0; i < tableNames.size(); i++) {
+				QueryDataThread qdThread = new QueryDataThread(mDatabase,
+						handlerGetData);
+				qdThread.setTableName(tableNames.get(i));
+				qdThread.start();
+				qdThread = null;
+			}
+
 		}
 	}
 }
