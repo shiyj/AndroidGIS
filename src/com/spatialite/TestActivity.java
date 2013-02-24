@@ -76,6 +76,7 @@ public class TestActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view,
 					int position, long id) {
+				//the first one is a button switch to parent file
 				if (0 == position) {
 					currentFileParent = currentFileParent.getParentFile();
 					if (null == currentFileParent) {
@@ -117,9 +118,9 @@ public class TestActivity extends Activity {
 	{
 		switch (resultCode)
 		{
-			//结果返回
+			//return if the canvas can't get data from database
 		case RESULT_OK:
-			//获取Bundle的数据
+			//get the  error message from bundle
 			Bundle bl= data.getExtras();
 			String errString=bl.getString("err");
 			AlertDialog.Builder errOpenDB = new Builder(context);

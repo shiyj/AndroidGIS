@@ -3,8 +3,6 @@ package com.spatialite;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +11,9 @@ import jsqlite.Stmt;
 //引入JTS
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.index.strtree.STRtree;
-import com.vividsolutions.jts.io.WKBReader;
 
-import android.R.string;
+import android.R.bool;
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -25,11 +23,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Paint.Style;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +39,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 
 public class MapCanvas extends Activity {
 	private String cacheFileName = "geoinker_db_dir.gik";
@@ -47,6 +48,8 @@ public class MapCanvas extends Activity {
 	private MyView mView;
 	private ProgressDialog mProgressDialog;
 	private Intent mIntent;
+
+	private boolean mIsDynamicDrawing = false;
 
 	public MapCanvas() {
 		mGeomEnvelope = new Envelope();
@@ -139,7 +142,7 @@ public class MapCanvas extends Activity {
 						selectedTable.add(tableNameStrings[i]);
 					}
 				}
-				if(0==selectedTable.size()){
+				if (0 == selectedTable.size()) {
 					throwErrToMain("You have not select a single layer!");
 					return;
 				}
@@ -183,6 +186,10 @@ public class MapCanvas extends Activity {
 		this.finish();
 	}
 
+	public void setIsDynamicDrawing(boolean isDynamic) {
+		mIsDynamicDrawing = isDynamic;
+	}
+
 	/**
 	 * @author engin
 	 * 
@@ -216,6 +223,9 @@ public class MapCanvas extends Activity {
 		int view_w = 300;
 		int view_h = 400;
 
+		private Bitmap m_CacheBitmap = null;
+		boolean m_isDraging = false;
+
 		MyView(Context context) {
 			super(context);
 		}
@@ -224,20 +234,36 @@ public class MapCanvas extends Activity {
 
 		@Override
 		protected void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
+			if (m_isDraging && !mIsDynamicDrawing) {
+				Log.w("Bitmap", "开始图片移动");
+				if (null == m_CacheBitmap) {
+					Log.w("Bitmap", "图形为空");
+					return;
+				}
+				if (m_CacheBitmap.isRecycled()) {
+					Log.w("Bitmap", "已经被回收！");
+					return;
+				}
+				int offsetX = (int) (m_endX - m_startX);
+				int offsetY = (int) (m_endY - m_startY);
+				canvas.drawBitmap(m_CacheBitmap, offsetX, offsetY, null);
+				//super.onDraw(canvas);
+				return;
+			}
 			Log.w("绘图", "开始绘图");
 			view_w = getWidth();
 			view_h = getHeight();
 
 			paint.setColor(Color.BLUE);
 			paint.setStyle(Style.FILL);
-			canvas.drawText("Hello", 10, 50, paint);
+			canvas.drawText("GeoInker", 10, 50, paint);
 			// canvas.drawRect(new Rect(0, 0, view_w, view_h), paint);
 			if (null == m_geomsIndex) {
 				return;
 			}
 			DrawGeomtry(canvas);
 			Log.w("绘图", "绘图结束");
+			//super.onDraw(canvas);
 		}
 
 		@Override
@@ -251,8 +277,13 @@ public class MapCanvas extends Activity {
 				query(m_startX, m_startY);
 				break;
 			case MotionEvent.ACTION_UP:
-				m_endX = m_startX = event.getX();
-				m_endY = m_startY = event.getY();
+				if (m_isDraging) {
+					m_isDraging = false;
+					drag2();
+					postInvalidate();// redraw the geometry in this view
+				}
+				m_endX = m_startX = 0;
+				m_endY = m_startY = 0;
 				break;
 			case MotionEvent.ACTION_POINTER_1_DOWN:
 				// 计算两点的距离，大于10f才认为是两根手指。
@@ -279,14 +310,24 @@ public class MapCanvas extends Activity {
 						m_fOldDist = a_fNewDist;
 					}
 				} else if (m_nMode == DRAG) {
-					if (m_endX - m_startX > 10 || m_endX - m_startX < -10
-							|| m_endY - m_startY > 10
-							|| m_endY - m_startY < -10) {
-						drag();
-						m_endX = m_startX = event.getX();
-						m_endY = m_startY = event.getY();
-						postInvalidate();
+					if (mIsDynamicDrawing) {
+						if (m_endX - m_startX > 10 || m_endX - m_startX < -10
+								|| m_endY - m_startY > 10
+								|| m_endY - m_startY < -10) {
+							drag();
+							m_endX = m_startX = event.getX();
+							m_endY = m_startY = event.getY();
+						}
+					} else {
+						if (!m_isDraging) {//only save the cache once during the move
+							setDrawingCacheEnabled(true);
+							m_CacheBitmap = Bitmap.createBitmap(getDrawingCache());
+							setDrawingCacheEnabled(false);
+							m_isDraging = true;
+						}
 					}
+					
+					postInvalidate();
 				}
 				break;
 			}
@@ -352,6 +393,9 @@ public class MapCanvas extends Activity {
 			ExecuedZoom(-0.2);
 		}
 
+		/**
+		 * drag with dynamic drawing;
+		 */
 		private void drag() {
 			double tmp_dx = 0;// 直接赋值给dx会影响dy的判断
 			if (m_endX - m_startX > 10 || m_endX - m_startX < -10) {
@@ -360,6 +404,17 @@ public class MapCanvas extends Activity {
 			if (m_endY - m_startY > 10 || m_endY - m_startY < -10) {
 				dy += (antTransData(m_endY, 1) - antTransData(m_startY, 1));
 			}
+			dx += tmp_dx;
+			ValidateDragDistance();
+		}
+		
+		/**
+		 * drag with picture move
+		 */
+		private void drag2() {
+			double tmp_dx = 0;// 直接赋值给dx会影响dy的判断
+			tmp_dx = antTransData(m_endX, 0) - antTransData(m_startX, 0);
+			dy += (antTransData(m_endY, 1) - antTransData(m_startY, 1));
 			dx += tmp_dx;
 			ValidateDragDistance();
 		}
@@ -617,7 +672,7 @@ public class MapCanvas extends Activity {
 					leavel = rate;
 					break;
 				case MessageType.SEND_PROGRESS:
-					
+
 					mProgressDialog.setProgress(((Integer) (msg.obj))
 							.intValue());
 					break;
