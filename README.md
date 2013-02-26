@@ -15,5 +15,6 @@ Just import it into eclipse and then run.
 **Note:** *I have compiled the source code of spatialite-android  and got two file "/libs/armeabi/libjsqlite.so" and "/libs/spatialite-android-library.jar" ,and then I copy them into this project.*
 
 
-
+## useage
+Perhaps you nead  a sample database, download it [here](http://geoinker.com/file/test.sqlite).Then use this application to open it.
 
