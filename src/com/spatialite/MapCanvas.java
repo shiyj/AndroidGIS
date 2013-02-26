@@ -178,6 +178,11 @@ public class MapCanvas extends Activity {
 		}
 	}
 
+	/**
+	 * send the errors messages back to main activity and close this.
+	 * 
+	 * @param errmsg
+	 */
 	public void throwErrToMain(String errmsg) {
 		Bundle errBundle = new Bundle();
 		errBundle.putString("err", errmsg);
@@ -190,10 +195,6 @@ public class MapCanvas extends Activity {
 		mIsDynamicDrawing = isDynamic;
 	}
 
-	/**
-	 * @author engin
-	 * 
-	 */
 	public class MyView extends View {
 		/**
 		 * 分别表示：SELECT选择属性 DRAG 拖动 ZOOM 放大缩小
@@ -203,26 +204,41 @@ public class MapCanvas extends Activity {
 		private static final int DRAG = 2;
 		private static final int SELECT = 3;
 
-		// private ArrayList<Geometry> m_geoms;
+		// store all the geometries to be shown and the spatial index of each
+		// geometry.
 		private STRtree m_geomsIndex;
 		private Paint paint = new Paint();
-		// 设置默认模式
+		// indentify the mode while operating the map view.
 		private int m_nMode = DRAG;
-		// 触摸标记
+		// touch point to indentify move(drag)
 		private double m_startX = 0;
-		private double m_startY;
-		private double m_endX;
-		private double m_endY;
+		private double m_startY = 0;
+		private double m_endX = 0;
+		private double m_endY = 0;
 		private double m_fOldDist = 1f;
 
-		private double rate;// 全屏时比例
+		// the scale of fullscreen 全屏时比例
+		private double rate;
+
+		/**
+		 * the scale of current screen. leavel = 1,full screen; leavel >
+		 * 1,enlarged map leavel < 1,lessened map
+		 */
 		private double leavel = 1;
-		// 相对于原数据坐标的平移位置dx,dy。
+		//
+		/**
+		 * the distance of the origin map data(in database) while zooming and
+		 * panning on the screen 相对于原数据坐标的平移位置dx,dy。
+		 */
 		private double dx = 0;
 		private double dy = 0;
-		int view_w = 300;
-		int view_h = 400;
 
+		// the width and height of the view
+		int view_w;
+		int view_h;
+
+		// the picture of the canvas after redraw all the geometries on the
+		// screen.
 		private Bitmap m_CacheBitmap = null;
 		boolean m_isDraging = false;
 
@@ -234,36 +250,35 @@ public class MapCanvas extends Activity {
 
 		@Override
 		protected void onDraw(Canvas canvas) {
-			if (m_isDraging && !mIsDynamicDrawing) {
-				Log.w("Bitmap", "开始图片移动");
+			view_w = getWidth();
+			view_h = getHeight();
+			if (!mIsDynamicDrawing && m_isDraging) {
+				Log.w("Bitmap", "drag START");
 				if (null == m_CacheBitmap) {
-					Log.w("Bitmap", "图形为空");
+					Log.w("Bitmap", "drag bitmap is null");
 					return;
 				}
 				if (m_CacheBitmap.isRecycled()) {
-					Log.w("Bitmap", "已经被回收！");
+					Log.w("Bitmap", "drag bitmap had been recycled");
 					return;
 				}
 				int offsetX = (int) (m_endX - m_startX);
 				int offsetY = (int) (m_endY - m_startY);
 				canvas.drawBitmap(m_CacheBitmap, offsetX, offsetY, null);
-				//super.onDraw(canvas);
+				Log.w("Bitmap", "drag END");
 				return;
 			}
-			Log.w("绘图", "开始绘图");
-			view_w = getWidth();
-			view_h = getHeight();
 
 			paint.setColor(Color.BLUE);
 			paint.setStyle(Style.FILL);
 			canvas.drawText("GeoInker", 10, 50, paint);
-			// canvas.drawRect(new Rect(0, 0, view_w, view_h), paint);
-			if (null == m_geomsIndex) {
+			if (null == m_CacheBitmap) {
+				Log.w("Bitmap", "redraw bitmap is null");
 				return;
 			}
-			DrawGeomtry(canvas);
-			Log.w("绘图", "绘图结束");
-			//super.onDraw(canvas);
+			Log.w("Bitmap", "redraw START");
+			canvas.drawBitmap(m_CacheBitmap, 0, 0, null);
+			Log.w("Bitmap", "redraw END");
 		}
 
 		@Override
@@ -280,21 +295,26 @@ public class MapCanvas extends Activity {
 				if (m_isDraging) {
 					m_isDraging = false;
 					drag2();
-					postInvalidate();// redraw the geometry in this view
+					DrawGeometryToBitmap();// redraw the geometry in this view
 				}
 				m_endX = m_startX = 0;
 				m_endY = m_startY = 0;
 				break;
 			case MotionEvent.ACTION_POINTER_1_DOWN:
-				// 计算两点的距离，大于10f才认为是两根手指。
+				/**
+				 * change to zoom mode only when the moved distance of two
+				 * fingers is big 10f 计算两点的距离，大于10f才认为是两根手指。
+				 */
 				m_fOldDist = spacing(event);
 				if (m_fOldDist > 10f) {
 					m_nMode = ZOOM;
 				}
 				break;
 			case MotionEvent.ACTION_POINTER_1_UP:
-				// 中途其中一根手指离开屏幕，退出缩放模式。
-				// 同时将开始标记点记为当前。
+				/**
+				 * change to drag mode when a finger leave the screen and reset
+				 * the touch point 中途其中一根手指离开屏幕，退出缩放模式.同时将开始标记点记为当前.
+				 */
 				m_nMode = DRAG;
 				m_endX = m_startX = event.getX();
 				m_endY = m_startY = event.getY();
@@ -319,14 +339,10 @@ public class MapCanvas extends Activity {
 							m_endY = m_startY = event.getY();
 						}
 					} else {
-						if (!m_isDraging) {//only save the cache once during the move
-							setDrawingCacheEnabled(true);
-							m_CacheBitmap = Bitmap.createBitmap(getDrawingCache());
-							setDrawingCacheEnabled(false);
+						if (!m_isDraging) {
 							m_isDraging = true;
 						}
 					}
-					
 					postInvalidate();
 				}
 				break;
@@ -334,6 +350,9 @@ public class MapCanvas extends Activity {
 			return true;
 		}
 
+		/*
+		 * validate whether the distance of panning is out of the boundary of the mapview
+		 */
 		private void ValidateDragDistance() {
 			// 不能超出地图范围。
 			double width = mGeomEnvelope.getWidth();
@@ -351,8 +370,7 @@ public class MapCanvas extends Activity {
 		}
 
 		/**
-		 * if the leavel is the minimal value ,don't drag it anymore.
-		 * 
+		 * if the leavel is the minimal value ,don't zoom it anymore.
 		 * @return Whether the leavel should change
 		 */
 		private boolean ValidateLeavel() {
@@ -376,7 +394,7 @@ public class MapCanvas extends Activity {
 			dx += destx - originx;
 			dy += desty - originy;
 			ValidateDragDistance();
-			postInvalidate();
+			DrawGeometryToBitmap();
 		}
 
 		private void zoom(double dis) {
@@ -407,7 +425,7 @@ public class MapCanvas extends Activity {
 			dx += tmp_dx;
 			ValidateDragDistance();
 		}
-		
+
 		/**
 		 * drag with picture move
 		 */
@@ -424,12 +442,13 @@ public class MapCanvas extends Activity {
 		}
 
 		/**
+		 * change the coordinate from datasource to screen.
 		 * 将数据坐标转换成屏幕坐标。
 		 * 
 		 * @param f
-		 *            坐标值
+		 *            the value(x or y,decided by the param i) of the coordinate 坐标值
 		 * @param i
-		 *            0表示x，1表示y;
+		 *            0,trans x;1,trans y  .    0表示x，1表示y;
 		 * @return
 		 */
 		private double transData(double f, double i) {
@@ -447,12 +466,13 @@ public class MapCanvas extends Activity {
 		}
 
 		/**
+		 *  change the coordinate from screen to datasource.
 		 * 将屏幕坐标转换成数据坐标。
 		 * 
 		 * @param f
-		 *            坐标值
+		 *             the value(x or y,decided by the param i) of the coordinate 坐标值
 		 * @param i
-		 *            0表示x，1表示y;
+		 *            0,trans x;1,trans y  .    0表示x，1表示y;
 		 * @return
 		 */
 		private double antTransData(double f, double i) {
@@ -469,15 +489,16 @@ public class MapCanvas extends Activity {
 			return result;
 		}
 
-		// 计算触摸两个点的距离。
 		private double spacing(MotionEvent event) {
 			double x = event.getX(0) - event.getX(1);
 			double y = event.getY(0) - event.getY(1);
 			return Math.sqrt(x * x + y * y);
 		}
 
+		/**
+		 * query the geometries by an envelope while redraw them into screen
+		 */
 		private Envelope searchEnv = new Envelope();
-
 		private void setCurrentEnvelop(double x1, double x2, double y1,
 				double y2) {
 			double xx1, xx2, yy1, yy2;
@@ -487,7 +508,6 @@ public class MapCanvas extends Activity {
 			yy2 = antTransData(y2, 1);
 			searchEnv.init(xx1, xx2, yy1, yy2);
 		}
-
 		private void setCurrentEnvelop() {
 			double xx1, xx2, yy1, yy2;
 			xx1 = antTransData(0, 0);
@@ -495,6 +515,24 @@ public class MapCanvas extends Activity {
 			yy1 = antTransData(view_h, 1);
 			yy2 = antTransData(0, 1);
 			searchEnv.init(xx1, xx2, yy1, yy2);
+		}
+
+		/**
+		 * Draw the Geometrise to a bitmap call this function only when the
+		 * change of the canvas is done
+		 */
+		private void DrawGeometryToBitmap() {
+			m_CacheBitmap = Bitmap.createBitmap(view_w, view_h,
+					Bitmap.Config.ARGB_8888);
+			Canvas cn = new Canvas(m_CacheBitmap);
+			if (null == m_geomsIndex) {
+				return;
+			}
+			DrawGeomtry(cn);
+			draw(cn);
+			cn.save(Canvas.ALL_SAVE_FLAG);
+			cn.restore();
+			postInvalidate();
 		}
 
 		private void DrawGeomtry(Canvas canvas) {
@@ -546,14 +584,6 @@ public class MapCanvas extends Activity {
 		 * 
 		 */
 		private void DrawLineStrings(Canvas canvas, Geometry geometry) {
-			// double distanceTolerance = 5/rate;
-			// if (distanceTolerance > 0.001) {
-			// DouglasPeuckerSimplifier lineSimplifier = new
-			// DouglasPeuckerSimplifier(geometry);
-			// lineSimplifier.setDistanceTolerance(distanceTolerance);
-			// lineSimplifier.setEnsureValid(false);
-			// geometry = lineSimplifier.getResultGeometry();
-			// }
 			String type = geometry.getGeometryType();
 			if (type.equals("MultiLineString")) {
 				int len = geometry.getNumGeometries();
@@ -650,13 +680,13 @@ public class MapCanvas extends Activity {
 					geom_height;
 					geom_width = env[2] - env[0];
 					geom_height = env[3] - env[1];
-					// 只有一个点的图层，原比例无缩放。
+					// if there only one point 只有一个点的图层，原比例无缩放。
 					if (geom_height < 1e-8 && geom_width < 1e-8) {
 						rate = 1;
 						mGeomEnvelope.init(view_w, 0, view_h, 0);
 					} else {
 						double rate1 = view_h / view_w;
-						// 屏幕比外接矩形窄
+						//the screen is narrower then the envelope of all geometries   屏幕比外接矩形窄
 						if (rate1 > geom_height / geom_width) {
 							rate = view_w / geom_width;
 							double d_height = (view_h / rate - geom_height) / 2;
@@ -679,12 +709,12 @@ public class MapCanvas extends Activity {
 				case MessageType.SEND_GEOMETRIES:
 					m_geomsIndex = (STRtree) msg.obj;
 					if (null == m_geomsIndex) {
-						Log.w("绘图", "未取得数据……");
+						Log.w("database", "no date in the database……");
 						mProgressDialog.dismiss();
 						return;
 					}
 					mProgressDialog.dismiss();
-					postInvalidate();
+					DrawGeometryToBitmap();
 					break;
 				case MessageType.SEND_ERR:
 					MapCanvas.this.throwErrToMain(msg.obj.toString());
