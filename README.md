@@ -5,23 +5,15 @@
 
 This is a native GIS plantform made for Android.
 
-This app is a copy of [spatialite-android](http://code.google.com/p/spatialite-android/) 
-but I want do something spatial for me.
+This application is based on [spatialite-android](http://code.google.com/p/spatialite-android/).
+But as you known,spatialite-android just is a geodatabase library, how can we show the data in view? The purpose of this app is to solve it.
 
-You must use Android-NDK to build it and , of cours, SDK & eclipse.
+## Installation
 
-Here is the way:
+Just import it into eclipse and then run.
 
-
-	git clone git@github.com:shiyj/AndroidGIS.git
-	cd ./AndroidGIS
-Now, you can build it just run the
-	ndk-build
- commend.
+**Note:** *I have compiled the source code of spatialite-android  and got two file "/libs/armeabi/libjsqlite.so" and "/libs/spatialite-android-library.jar" ,and then I copy them into this project.*
 
 
-	<android-ndk-HOME>/ndk-build
 
-After this you will find some files in your /lib/armeabi  which is the lib you build from JNI.
 
-Now,you can import it into eclipse,enjoy it!
